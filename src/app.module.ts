@@ -12,7 +12,7 @@ import { NewsModule } from './components/news/news.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/yanov'),
+    MongooseModule.forRoot('mongodb://mongodb:27017/yanov'),
     OrdersModule,
     TripsModule,
     PassengersModule,
