@@ -32,6 +32,14 @@ services:
   api: 
     image: krishtopchik/back
     build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    command: npm run start:dev
+    env_file:
+      - .env
     depends_on:
       - mongodb
 
