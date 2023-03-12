@@ -76,11 +76,9 @@ export class PassengerService {
     const password = createHmac('sha256', SALT)
       .update(passenger.password)
       .digest('hex');
-    console.log(password);
     const existingPassenger = await this.passengerModel
       .findOne({ phoneNumber: passenger.phoneNumber })
       .exec();
-    console.log(existingPassenger);
     if (existingPassenger.password === password) {
       return existingPassenger;
     }
@@ -88,6 +86,13 @@ export class PassengerService {
   }
 
   async register(passenger: any): Promise<any> {
+    const existingUser = await this.passengerModel.findOne({
+      phoneNumber: passenger.phoneNumber,
+    });
+    console.log(existingUser);
+    if (existingUser) {
+      return false;
+    }
     const password = createHmac('sha256', SALT)
       .update(passenger.password)
       .digest('hex');

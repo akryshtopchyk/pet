@@ -111,7 +111,6 @@ export class PassengerController {
         existingPassenger,
       });
     } catch (err) {
-      console.log(err);
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
         message: 'Error: Passenger not created!',

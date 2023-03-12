@@ -32,7 +32,6 @@ export class OrderService {
 
   async getAll(): Promise<IOrder[]> {
     const orderData = await this.orderModel.find();
-    console.log(orderData);
     if (!orderData || orderData.length == 0) {
       return [];
     }
@@ -93,15 +92,18 @@ export class OrderService {
   getStops() {
     return {
       mi: [
-        { id: 1, name: 'Автовокзал Минск', time: 0 },
-        { id: 2, name: 'Барановчи', time: 90 },
+        { id: 1, name: 'Автостанция "Юго-Западная"', time: 0 },
+        { id: 2, name: 'Станция метро "Петровщина"', time: 5 },
+        { id: 3, name: 'Станция метро "Малиновка"', time: 10 },
+        { id: 4, name: 'Барановичи', time: 100 },
       ],
       im: [
         { id: 1, name: 'Автовокзал Иваново', time: 0 },
-        { id: 2, name: 'Лясковичи УПК', time: 15 },
-        { id: 3, name: 'Мотоль', time: 30 },
-        { id: 4, name: 'Тышковичи', time: 37 },
-        { id: 5, name: 'Оброво', time: 57 },
+        { id: 2, name: 'Иваново Центральная аптека', time: 0 },
+        { id: 3, name: 'Иваново Спорткомплекс "Импульс"', time: 0 },
+        { id: 4, name: 'Мотоль', time: 10 },
+        { id: 5, name: 'Тышковичи', time: 16 },
+        { id: 6, name: 'Барановичи', time: 120 },
       ],
     };
   }

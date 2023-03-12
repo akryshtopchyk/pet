@@ -37,7 +37,7 @@ services:
       - /app/node_modules
     ports:
       - ${APP_PORT}:${APP_PORT}
-    command: npm run start:dev
+    command: npm run start:prod
     env_file:
       - .env
     depends_on:

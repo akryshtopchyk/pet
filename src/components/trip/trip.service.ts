@@ -99,17 +99,7 @@ export class TripService {
   async getByDate(date: string, from: string): Promise<any[]> {
     const tripData = await this.tripModel.find({
       date: {
-        $eq: new Date(
-          `${+date.split(',')[0]}-${
-            +date.split(',')[1] + 1 > 10
-              ? +date.split(',')[1] + 1
-              : '0' + (+date.split(',')[1] + 1)
-          }-${
-            +date.split(',')[2] > 10
-              ? +date.split(',')[2]
-              : '0' + +date.split(',')[2]
-          }T00:00:00+00:00`,
-        ),
+        $eq: this.getDate(date),
       },
       from: {
         $eq: from,
@@ -121,7 +111,6 @@ export class TripService {
     const t = await Promise.all(
       tripData.map(async (trip) => {
         const orders = await this.orderService.getByTripId(trip._id);
-        console.log(orders);
         return {
           _id: trip._id,
           date: trip.date,
@@ -136,6 +125,19 @@ export class TripService {
       }),
     );
     return t;
+  }
+
+  private getDate(date: string) {
+    const year = +date.split(',')[0];
+    const month =
+      +date.split(',')[1] + 1 > 10
+        ? +date.split(',')[1] + 1
+        : '0' + (+date.split(',')[1] + 1);
+    const day =
+      +date.split(',')[2] > 10
+        ? +date.split(',')[2]
+        : '0' + +date.split(',')[2];
+    return new Date(`${year}-${month}-${day}T00:00:00+00:00`);
   }
 
   async getById(tripId: string): Promise<any> {
