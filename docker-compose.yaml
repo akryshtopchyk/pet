@@ -30,7 +30,6 @@ services:
       - mongodb_data_container:/data/db
 
   api: 
-    image: krishtopchik/back
     build: .
     volumes:
       - .:/app
