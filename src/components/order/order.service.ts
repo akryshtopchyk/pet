@@ -96,6 +96,7 @@ export class OrderService {
         { id: 2, name: 'Станция метро "Петровщина"', time: 5 },
         { id: 3, name: 'Станция метро "Малиновка"', time: 10 },
         { id: 4, name: 'Барановичи', time: 100 },
+        { id: 5, name: 'Ивацевичи', time: 150 },
       ],
       im: [
         { id: 1, name: 'Автовокзал Иваново', time: 0 },
@@ -106,7 +107,8 @@ export class OrderService {
         { id: 6, name: 'УПК', time: 5 },
         { id: 7, name: 'Мотоль', time: 10 },
         { id: 8, name: 'Тышковичи', time: 16 },
-        { id: 9, name: 'Барановичи', time: 120 },
+        { id: 9, name: 'Ивацевичи', time: 50 },
+        { id: 10, name: 'Барановичи', time: 100 },
       ],
     };
   }
