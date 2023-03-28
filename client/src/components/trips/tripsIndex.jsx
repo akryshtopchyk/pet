@@ -44,7 +44,9 @@ const TripsIndex = () => {
             }`,
             date: `${new Date(el.date).getDate()}.${
               new Date(el.date).getMonth() + 1
-            }.${new Date(el.date).getFullYear()}`,
+            }.${new Date(el.date).getFullYear()} - ${getDay(
+              new Date(el.date).getDay(),
+            )}`,
             dateTime: el.departureTime,
             place: el.seatCount,
             freePlace: el.seatCount - el.orders,
@@ -76,6 +78,25 @@ const TripsIndex = () => {
     };
     fetchData().catch(console.error);
   }, []);
+
+  const getDay = (day) => {
+    switch (day) {
+      case 0:
+        return 'воскресенье';
+      case 1:
+        return 'понедельник';
+      case 2:
+        return 'вторник';
+      case 3:
+        return 'среда';
+      case 4:
+        return 'четверг';
+      case 5:
+        return 'пятница';
+      case 6:
+        return 'суббота';
+    }
+  };
 
   const createTrip = async () => {
     const regEx = /[0-2]\d:[0-5]\d/;
@@ -156,7 +177,7 @@ const TripsIndex = () => {
           tripData.map((el) => ({
             key: el._id,
             tripTitle: `${el.from} - ${el.to}`,
-            date: el.date,
+            date: `${el.date}`,
             dateTime: el.departureTime,
             place: el.seatCount,
             freePlace: el.seatCount - el.orders,
