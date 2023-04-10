@@ -12,4 +12,5 @@ export interface IOrder extends Document {
   readonly firstName: string;
   readonly lastName: string;
   readonly phoneNumber: string;
+  readonly date: Date;
 }

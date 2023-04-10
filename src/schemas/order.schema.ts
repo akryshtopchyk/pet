@@ -32,6 +32,9 @@ export class Order {
 
   @Prop({ required: true })
   description: string;
+
+  @Prop({ required: false })
+  date: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

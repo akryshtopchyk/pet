@@ -40,4 +40,6 @@ export class CreateOrderDto {
   @IsString()
   @IsNotEmpty()
   readonly phoneNumber: string;
+
+  readonly date: Date;
 }

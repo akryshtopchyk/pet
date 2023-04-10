@@ -29,16 +29,20 @@ const Trip = () => {
       if (data.status === 200) {
         const orderData = data.data.orderData;
         setData(
-          orderData.map((el) => ({
-            key: el._id,
-            firstName: el.firstName,
-            lastName: el.lastName,
-            phoneNumber: el.phoneNumber,
-            count: el.seatCount,
-            description: el.description,
-            fromStop: el.fromStop,
-            toStop: el.toStop,
-          })),
+          orderData.map((el) => {
+            const date = el.date ? new Date(el.date) : '';
+            return {
+              key: el._id,
+              firstName: el.firstName,
+              lastName: el.lastName,
+              phoneNumber: el.phoneNumber,
+              count: el.seatCount,
+              description: el.description,
+              fromStop: el.fromStop,
+              toStop: el.toStop,
+              date: date ? date.toLocaleString('ru-RU') : '',
+            };
+          }),
         );
       } else {
         setData([]);
@@ -106,16 +110,20 @@ const Trip = () => {
       if (data.status === 200) {
         const orderData = data.data.orderData;
         setData(
-          orderData.map((el) => ({
-            key: el._id,
-            firstName: el.firstName,
-            lastName: el.lastName,
-            phoneNumber: el.phoneNumber,
-            count: el.seatCount,
-            description: el.description,
-            fromStop: el.fromStop,
-            toStop: el.toStop,
-          })),
+          orderData.map((el) => {
+            const date = el.date ? new Date(el.date) : '';
+            return {
+              key: el._id,
+              firstName: el.firstName,
+              lastName: el.lastName,
+              phoneNumber: el.phoneNumber,
+              count: el.seatCount,
+              description: el.description,
+              fromStop: el.fromStop,
+              toStop: el.toStop,
+              date: date ? date.toLocaleString('ru-RU') : '',
+            };
+          }),
         );
       } else {
         setData([]);
@@ -163,6 +171,11 @@ const Trip = () => {
       title: 'Пометка',
       dataIndex: 'description',
       key: 'description',
+    },
+    {
+      title: 'Дата',
+      dataIndex: 'date',
+      key: 'date',
     },
     {
       title: 'Действия',
@@ -216,16 +229,20 @@ const Trip = () => {
         if (data.status === 200) {
           const orderData = data.data.orderData;
           setData(
-            orderData.map((el) => ({
-              key: el._id,
-              firstName: el.firstName,
-              lastName: el.lastName,
-              phoneNumber: el.phoneNumber,
-              count: el.seatCount,
-              description: el.description,
-              fromStop: el.fromStop,
-              toStop: el.toStop,
-            })),
+            orderData.map((el) => {
+              const date = el.date ? new Date(el.date) : '';
+              return {
+                key: el._id,
+                firstName: el.firstName,
+                lastName: el.lastName,
+                phoneNumber: el.phoneNumber,
+                count: el.seatCount,
+                description: el.description,
+                fromStop: el.fromStop,
+                toStop: el.toStop,
+                date: date ? date.toLocaleString('ru-RU') : '',
+              };
+            }),
           );
         } else {
           setData([]);
