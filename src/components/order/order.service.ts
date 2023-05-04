@@ -10,6 +10,15 @@ export class OrderService {
   constructor(@InjectModel('Order') private orderModel: Model<IOrder>) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<IOrder> {
+    const existingOrder = await this.orderModel.findOne({
+      phoneNumber: createOrderDto.phoneNumber,
+      tripId: createOrderDto.tripId,
+    });
+    if (existingOrder) {
+      throw new NotFoundException(
+        `Order #${createOrderDto.phoneNumber} already exists`,
+      );
+    }
     const newOrder = await new this.orderModel({
       ...createOrderDto,
       date: new Date(),
@@ -97,9 +106,8 @@ export class OrderService {
       mi: [
         { id: 1, name: 'Автостанция "Юго-Западная"', time: 0 },
         { id: 2, name: 'Станция метро "Петровщина"', time: 5 },
-        { id: 3, name: 'Станция метро "Малиновка"', time: 10 },
-        { id: 4, name: 'Барановичи', time: 100 },
-        { id: 5, name: 'Ивацевичи', time: 150 },
+        { id: 3, name: 'Барановичи', time: 100 },
+        { id: 4, name: 'Ивацевичи', time: 150 },
       ],
       im: [
         { id: 1, name: 'Автовокзал Иваново', time: 0 },
