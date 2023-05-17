@@ -22,9 +22,34 @@ const Trip = () => {
   const [trip, setTrip] = useState({});
   const [load, setLoad] = useState(true);
   const [stops, setStops] = useState({});
+  const [deleted, setDeleted] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
+      const deleted = await axios.get(
+        `${import.meta.env.VITE_ROUTE}order/deleted/${id}`,
+      );
+      if (deleted.status === 200) {
+        const deletedData = deleted.data.orderData;
+        setDeleted(
+          deletedData.map((el) => {
+            const date = el.date ? new Date(el.date) : '';
+            return {
+              key: el._id,
+              firstName: el.firstName,
+              lastName: el.lastName,
+              phoneNumber: el.phoneNumber,
+              count: el.seatCount,
+              description: el.description,
+              fromStop: el.fromStop,
+              toStop: el.toStop,
+              date: date ? date.toLocaleString('ru-RU') : '',
+            };
+          }),
+        );
+      } else {
+        setDeleted([]);
+      }
       const data = await axios.get(`${import.meta.env.VITE_ROUTE}order/${id}`);
       if (data.status === 200) {
         const orderData = data.data.orderData;
@@ -185,6 +210,48 @@ const Trip = () => {
           Удалить
         </Button>
       ),
+    },
+  ];
+  const deletedColumns = [
+    {
+      title: 'Имя',
+      dataIndex: 'firstName',
+      key: 'firstName',
+    },
+    {
+      title: 'Фамилия',
+      dataIndex: 'lastName',
+      key: 'lastName',
+    },
+    {
+      title: 'Номер телефона',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
+    },
+    {
+      title: 'Количество мест',
+      dataIndex: 'count',
+      key: 'count',
+    },
+    {
+      title: 'Посадка',
+      dataIndex: 'fromStop',
+      key: 'fromStop',
+    },
+    {
+      title: 'Высадка',
+      dataIndex: 'toStop',
+      key: 'toStop',
+    },
+    {
+      title: 'Пометка',
+      dataIndex: 'description',
+      key: 'description',
+    },
+    {
+      title: 'Дата удаления',
+      dataIndex: 'date',
+      key: 'date',
     },
   ];
 
@@ -369,6 +436,9 @@ const Trip = () => {
         onOk={handleOk}
         onCancel={handleCancel}
       ></Modal>
+      <div style={{ margin: '24px 0' }} />
+      <h5 className="new_trip_subtitles">Отмененные бронирования</h5>
+      <Table columns={deletedColumns} dataSource={deleted} />
     </>
   );
 };

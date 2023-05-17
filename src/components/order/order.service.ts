@@ -4,10 +4,15 @@ import { Model } from 'mongoose';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { IOrder } from '../../interfaces/order.interface';
+import { IDeletedOrder } from '../../interfaces/deleted-order.interface';
 
 @Injectable()
 export class OrderService {
-  constructor(@InjectModel('Order') private orderModel: Model<IOrder>) {}
+  constructor(
+    @InjectModel('Order') private orderModel: Model<IOrder>,
+    @InjectModel('DeletedOrder')
+    private deletedOrderModel: Model<IDeletedOrder>,
+  ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<IOrder> {
     const existingOrder = await this.orderModel.findOne({
@@ -90,11 +95,22 @@ export class OrderService {
   }
 
   async delete(orderId: string): Promise<IOrder> {
-    const deletedOrder = await this.orderModel.findByIdAndDelete(orderId);
-    if (!deletedOrder) {
-      throw new NotFoundException(`Order #${orderId} not found`);
+    try {
+      const order: any = await this.orderModel.findById(orderId);
+      const { _id, ...newDeletedOrder } = order._doc;
+      const newOrder = await new this.orderModel({
+        ...newDeletedOrder,
+        date: new Date(),
+      });
+      await this.deletedOrderModel.create(newOrder);
+      const deletedOrder = await this.orderModel.findByIdAndDelete(orderId);
+      if (!deletedOrder) {
+        throw new NotFoundException(`Order #${orderId} not found`);
+      }
+      return deletedOrder;
+    } catch (e) {
+      console.log(e);
     }
-    return deletedOrder;
   }
 
   async deleteByTripId(tripId) {
@@ -122,5 +138,14 @@ export class OrderService {
         { id: 10, name: 'Барановичи', time: 100 },
       ],
     };
+  }
+  async getAllDeletedByTripId(tripId): Promise<IOrder[]> {
+    const orderData = await this.deletedOrderModel
+      .find({ tripId: tripId })
+      .exec();
+    if (!orderData || orderData.length == 0) {
+      return [];
+    }
+    return orderData;
   }
 }

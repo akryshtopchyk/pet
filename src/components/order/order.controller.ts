@@ -68,6 +68,19 @@ export class OrderController {
     }
   }
 
+  @Get('/deleted/:id')
+  async getDeleted(@Res() response, @Param('id') tripId: string) {
+    try {
+      const orderData = await this.orderService.getAllDeletedByTripId(tripId);
+      return response.status(HttpStatus.OK).json({
+        message: 'All orders data found successfully',
+        orderData,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
   @Get('/:id')
   async getOrdersByTrip(@Res() response, @Param('id') tripId: string) {
     try {
