@@ -79,7 +79,7 @@ export class PassengerService {
     const existingPassenger = await this.passengerModel
       .findOne({ phoneNumber: passenger.phoneNumber })
       .exec();
-    if (existingPassenger.password === password) {
+    if (existingPassenger && existingPassenger.password === password) {
       return existingPassenger;
     }
     return false;

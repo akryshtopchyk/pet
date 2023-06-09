@@ -130,11 +130,11 @@ export class TripService {
   private getDate(date: string) {
     const year = +date.split(',')[0];
     const month =
-      +date.split(',')[1] + 1 > 10
+      +date.split(',')[1] + 1 >= 10
         ? +date.split(',')[1] + 1
         : '0' + (+date.split(',')[1] + 1);
     const day =
-      +date.split(',')[2] > 10
+      +date.split(',')[2] >= 10
         ? +date.split(',')[2]
         : '0' + +date.split(',')[2];
     return new Date(`${year}-${month}-${day}T00:00:00+00:00`);
