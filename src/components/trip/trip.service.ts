@@ -104,6 +104,43 @@ export class TripService {
       from: {
         $eq: from,
       },
+      to: {
+        $eq: from === 'ivanovo' ? 'minsk' : 'ivanovo',
+      },
+    });
+    if (!tripData || tripData.length == 0) {
+      return [];
+    }
+    const t = await Promise.all(
+      tripData.map(async (trip) => {
+        const orders = await this.orderService.getByTripId(trip._id);
+        return {
+          _id: trip._id,
+          date: trip.date,
+          from: trip.from,
+          to: trip.to,
+          sum: trip.sum,
+          arrivalTime: trip.arrivalTime,
+          departureTime: trip.departureTime,
+          seatCount: trip.seatCount,
+          orders: orders.reduce((a: any, b: any) => a + b.seatCount, 0),
+        };
+      }),
+    );
+    return t;
+  }
+
+  async getByDateV2(date: string, from: string, to: string): Promise<any[]> {
+    const tripData = await this.tripModel.find({
+      date: {
+        $eq: this.getDate(date),
+      },
+      from: {
+        $eq: from,
+      },
+      to: {
+        $eq: to,
+      },
     });
     if (!tripData || tripData.length == 0) {
       return [];

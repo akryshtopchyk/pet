@@ -19,7 +19,8 @@ const TripsIndex = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deletedTrip, setDeletedTrip] = useState({});
   const [isNewTrip, setIsNewTrip] = useState(false);
-  const [from, setFrom] = useState('minsk');
+  const [from, setFrom] = useState();
+  const [to, setTo] = useState();
   const [date, setDate] = useState(new Date());
   const [departureTime, setDepartureTime] = useState('');
   const [seatCount, setSeatCount] = useState(15);
@@ -39,9 +40,7 @@ const TripsIndex = () => {
         setData(
           tripData.map((el) => ({
             key: el._id,
-            tripTitle: `${
-              el.from === 'minsk' ? 'Минск - Иваново' : 'Иваново - Минск'
-            }`,
+            tripTitle: getTripTitle(el.from, el.to),
             date: `${new Date(el.date).getDate()}.${
               new Date(el.date).getMonth() + 1
             }.${new Date(el.date).getFullYear()} - ${getDay(
@@ -62,9 +61,7 @@ const TripsIndex = () => {
         setHistory(
           tripData.map((el) => ({
             key: el._id,
-            tripTitle: `${
-              el.from === 'minsk' ? 'Минск - Иваново' : 'Иваново - Минск'
-            }`,
+            tripTitle: getTripTitle(el.from, el.to),
             date: `${new Date(el.date).getDate()}.${
               new Date(el.date).getMonth() + 1
             }.${new Date(el.date).getFullYear()}`,
@@ -78,6 +75,33 @@ const TripsIndex = () => {
     };
     fetchData().catch(console.error);
   }, []);
+
+  const getTripTitle = (from, to) => {
+    let newFrom, newTo;
+    switch (from) {
+      case 'minsk':
+        newFrom = 'Минск';
+        break;
+      case 'ivanovo':
+        newFrom = 'Иваново';
+        break;
+      case 'grodno':
+        newFrom = 'Гродно';
+        break;
+    }
+    switch (to) {
+      case 'minsk':
+        newTo = 'Минск';
+        break;
+      case 'ivanovo':
+        newTo = 'Иваново';
+        break;
+      case 'grodno':
+        newTo = 'Гродно';
+        break;
+    }
+    return `${newFrom} - ${newTo}`;
+  };
 
   const getDay = (day) => {
     switch (day) {
@@ -102,15 +126,17 @@ const TripsIndex = () => {
     const regEx = /[0-2]\d:[0-5]\d/;
     if (
       from &&
+      to &&
       date &&
       departureTime &&
       seatCount &&
       sum &&
       regEx.test(departureTime)
     ) {
+      console.log(from, to);
       const res = await axios.post(`${import.meta.env.VITE_ROUTE}trip`, {
         from,
-        to: from === 'minsk' ? 'ivanovo' : 'minsk',
+        to,
         date,
         arrivalTime: getArrivalTime(departureTime),
         departureTime,
@@ -123,9 +149,7 @@ const TripsIndex = () => {
         setData(
           tripData.map((el) => ({
             key: el._id,
-            tripTitle: `${
-              el.from === 'minsk' ? 'Минск - Иваново' : 'Иваново - Минск'
-            }`,
+            tripTitle: getTripTitle(el.from, el.to),
             date: `${new Date(el.date).getDate()}.${
               new Date(el.date).getMonth() + 1
             }.${new Date(el.date).getFullYear()}`,
@@ -143,17 +167,32 @@ const TripsIndex = () => {
   };
 
   const getArrivalTime = (dTime) => {
-    const startH = +dTime.split(':')[0] * 60;
-    const startM = +dTime.split(':')[1];
-    const resultH = Math.trunc((startH + startM + 200) / 60);
-    const resultM = startH + startM + 200 - resultH * 60;
-    return `${resultH < 10 ? '0' + resultH : resultH}:${
-      resultM < 10 ? '0' + resultM : resultM
-    }`;
+    console.log(to, from);
+    if (to === 'minsk' || from === 'minsk') {
+      const startH = +dTime.split(':')[0] * 60;
+      const startM = +dTime.split(':')[1];
+      const resultH = Math.trunc((startH + startM + 200) / 60);
+      const resultM = startH + startM + 200 - resultH * 60;
+      return `${resultH < 10 ? '0' + resultH : resultH}:${
+        resultM < 10 ? '0' + resultM : resultM
+      }`;
+    } else {
+      const startH = +dTime.split(':')[0] * 60;
+      const startM = +dTime.split(':')[1];
+      const resultH = Math.trunc((startH + startM + 240) / 60);
+      const resultM = startH + startM + 240 - resultH * 60;
+      return `${resultH < 10 ? '0' + resultH : resultH}:${
+        resultM < 10 ? '0' + resultM : resultM
+      }`;
+    }
   };
 
   const handleChangeFrom = (value) => {
     setFrom(value);
+  };
+  const handleChangeTo = (value) => {
+    console.log(value);
+    setTo(value);
   };
 
   const showNewTrip = () => {
@@ -176,7 +215,7 @@ const TripsIndex = () => {
         setData(
           tripData.map((el) => ({
             key: el._id,
-            tripTitle: `${el.from} - ${el.to}`,
+            tripTitle: getTripTitle(el.from, el.to),
             date: `${el.date}`,
             dateTime: el.departureTime,
             place: el.seatCount,
@@ -310,24 +349,24 @@ const TripsIndex = () => {
             <Col span={6}>
               <h4 className="new_trip_subtitles">Из</h4>
               <Select
-                defaultValue="minsk"
                 style={{ width: 132 }}
                 onChange={handleChangeFrom}
                 options={[
                   { value: 'minsk', label: 'Минск' },
                   { value: 'ivanovo', label: 'Иваново' },
+                  { value: 'grodno', label: 'Гродно' },
                 ]}
               />
             </Col>
             <Col span={6}>
               <h4 className="new_trip_subtitles">В</h4>
               <Select
-                defaultValue="minsk"
                 style={{ width: 132 }}
-                value={from === 'minsk' ? 'ivanovo' : 'minsk'}
+                onChange={handleChangeTo}
                 options={[
-                  { value: 'minsk', label: 'Минск', disabled: true },
-                  { value: 'ivanovo', label: 'Иваново', disabled: true },
+                  { value: 'minsk', label: 'Минск' },
+                  { value: 'ivanovo', label: 'Иваново' },
+                  { value: 'grodno', label: 'Гродно' },
                 ]}
               />
             </Col>
@@ -346,16 +385,6 @@ const TripsIndex = () => {
                 style={{ width: 132 }}
               />
             </Col>
-            {/* <Col span={6}>
-              <h4 className="new_trip_subtitles">Время прибытия</h4>
-              <Input
-                type="text"
-                onChange={handleArrivalTime}
-                value={arrivalTime}
-                placeholder="Время прибытия"
-                style={{ width: 132 }}
-              />
-            </Col> */}
           </Row>
           <Row>
             <Col span={6}>

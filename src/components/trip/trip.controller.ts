@@ -94,6 +94,24 @@ export class TripController {
     }
   }
 
+  @Get('/v2/date/:date/:from/:to')
+  async getByDateAndFromV2(
+    @Res() response,
+    @Param('date') date: string,
+    @Param('from') from: string,
+    @Param('to') to: string,
+  ) {
+    try {
+      const tripData = await this.tripService.getByDateV2(date, from, to);
+      return response.status(HttpStatus.OK).json({
+        message: 'All trips data found successfully',
+        tripData,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
   @Post('/orders/:phoneNumber')
   async getTripsWithOrders(
     @Res() response,
