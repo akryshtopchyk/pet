@@ -26,6 +26,7 @@ const TripsIndex = () => {
   const [seatCount, setSeatCount] = useState(15);
   const [sum, setSum] = useState(25);
   const [data, setData] = useState([]);
+  const [grodnoData, setGrodnoData] = useState([]);
   const [history, setHistory] = useState([]);
 
   const onChangeDate = (date, dateString) => {
@@ -37,21 +38,7 @@ const TripsIndex = () => {
       const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip`);
       if (data.status === 200) {
         const tripData = data.data.tripData;
-        setData(
-          tripData.map((el) => ({
-            key: el._id,
-            tripTitle: getTripTitle(el.from, el.to),
-            date: `${new Date(el.date).getDate()}.${
-              new Date(el.date).getMonth() + 1
-            }.${new Date(el.date).getFullYear()} - ${getDay(
-              new Date(el.date).getDay(),
-            )}`,
-            dateTime: el.departureTime,
-            place: el.seatCount,
-            freePlace: el.seatCount - el.orders,
-            cost: el.sum,
-          })),
-        );
+        setAllData(tripData);
       }
       const historyData = await axios.get(
         `${import.meta.env.VITE_ROUTE}trip/history`,
@@ -146,19 +133,7 @@ const TripsIndex = () => {
       if (res.status === 201) {
         const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip`);
         const tripData = data.data.tripData;
-        setData(
-          tripData.map((el) => ({
-            key: el._id,
-            tripTitle: getTripTitle(el.from, el.to),
-            date: `${new Date(el.date).getDate()}.${
-              new Date(el.date).getMonth() + 1
-            }.${new Date(el.date).getFullYear()}`,
-            dateTime: el.departureTime,
-            place: el.seatCount,
-            freePlace: el.seatCount - el.orders,
-            cost: el.sum,
-          })),
-        );
+        setAllData(tripData);
       }
       setIsNewTrip(!isNewTrip);
     } else {
@@ -212,17 +187,7 @@ const TripsIndex = () => {
       const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip`);
       if (data.status === 200) {
         const tripData = data.data.tripData;
-        setData(
-          tripData.map((el) => ({
-            key: el._id,
-            tripTitle: getTripTitle(el.from, el.to),
-            date: `${el.date}`,
-            dateTime: el.departureTime,
-            place: el.seatCount,
-            freePlace: el.seatCount - el.orders,
-            cost: el.sum,
-          })),
-        );
+        setAllData(tripData);
       }
     }
     setIsModalOpen(false);
@@ -231,6 +196,46 @@ const TripsIndex = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const setAllData = (tripData) => {
+    const minsk = [];
+    const grodno = [];
+    tripData.forEach((el) => {
+      if (el.from === 'minsk' || el.to === 'minsk') {
+        minsk.push({
+          key: el._id,
+          tripTitle: getTripTitle(el.from, el.to),
+          date: `${new Date(el.date).getDate()}.${
+            new Date(el.date).getMonth() + 1
+          }.${new Date(el.date).getFullYear()} - ${getDay(
+            new Date(el.date).getDay(),
+          )}`,
+          dateTime: el.departureTime,
+          place: el.seatCount,
+          freePlace: el.seatCount - el.orders,
+          cost: el.sum,
+        });
+      }
+      if (el.from === 'grodno' || el.to === 'grodno') {
+        grodno.push({
+          key: el._id,
+          tripTitle: getTripTitle(el.from, el.to),
+          date: `${new Date(el.date).getDate()}.${
+            new Date(el.date).getMonth() + 1
+          }.${new Date(el.date).getFullYear()} - ${getDay(
+            new Date(el.date).getDay(),
+          )}`,
+          dateTime: el.departureTime,
+          place: el.seatCount,
+          freePlace: el.seatCount - el.orders,
+          cost: el.sum,
+        });
+      }
+    });
+
+    setData(minsk);
+    setGrodnoData(grodno);
   };
 
   const columns = [
@@ -415,7 +420,20 @@ const TripsIndex = () => {
         </Card>
       </Row>
       <div style={{ margin: '24px 0' }} />
+      <Row>
+        <Col span={24}>
+          <h1>Иваново-Минск-Иваново</h1>
+        </Col>
+      </Row>
       <Table columns={columns} dataSource={data} />
+
+      <div style={{ margin: '24px 0' }} />
+      <Row>
+        <Col span={24}>
+          <h1>Иваново-Гродно-Иваново</h1>
+        </Col>
+      </Row>
+      <Table columns={columns} dataSource={grodnoData} />
 
       <Row>
         <Col span={24}>
