@@ -175,8 +175,14 @@ const TripsIndex = () => {
   };
 
   const handleDelete = (key) => {
-    setDeletedTrip(data.find((el) => el.key === key));
-    setIsModalOpen(true);
+    const trip = data.find((el) => el.key === key);
+    if (trip) {
+      setDeletedTrip(trip);
+      setIsModalOpen(true);
+    } else {
+      setDeletedTrip(grodnoData.find((el) => el.key === key));
+      setIsModalOpen(true);
+    }
   };
 
   const handleOk = async () => {
@@ -190,7 +196,6 @@ const TripsIndex = () => {
         setAllData(tripData);
       }
     }
-    setIsModalOpen(false);
     setIsModalOpen(false);
   };
 
