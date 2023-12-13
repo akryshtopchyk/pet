@@ -14,5 +14,6 @@ import { OrdersModule } from '../order/order.module';
   ],
   controllers: [TripController],
   providers: [TripService],
+  exports: [TripService],
 })
 export class TripsModule {}

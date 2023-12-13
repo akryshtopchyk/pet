@@ -205,6 +205,20 @@ export class TripService {
     return deletedTrip;
   }
 
+  async deleteOlder() {
+    await this.tripModel.deleteMany({
+      date: {
+        $lte: new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDate() - 1,
+          23,
+          59,
+        ),
+      },
+    });
+  }
+
   async getTripsWithOrders(ids: string[], phoneNumber: string) {
     const tripData = await this.tripModel.find({ _id: { $in: ids } });
     if (!tripData || tripData.length == 0) {
