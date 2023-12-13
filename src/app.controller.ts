@@ -10,8 +10,9 @@ export class AppController {
     if (cred.login === 'admin' && cred.password === 'password@!1') {
       return response.json(true);
     }
-    if (cred.login === 'andrey' && cred.password === 'deleteold') {
+    if (cred.login === 'andrey' && cred.password === 'andrey123') {
       await this.appService.delete();
+      return response.json(true);
     }
     return response.json(false);
   }
