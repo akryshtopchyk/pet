@@ -17,6 +17,8 @@ const Login = () => {
     });
     if (res.data) {
       localStorage.setItem('isLogin', true);
+      const today = new Date();
+      localStorage.setItem('expDate', today.setDate(new Date().getDate() + 1));
       setUser(true);
       setError(false);
     } else {
@@ -26,8 +28,13 @@ const Login = () => {
 
   useEffect(() => {
     const isLogin = localStorage.getItem('isLogin');
-    if (isLogin) {
+    const expDate = localStorage.getItem('expDate');
+    if (isLogin && expDate && expDate > new Date().getTime()) {
       setUser(true);
+    } else {
+      localStorage.removeItem('isLogin');
+      localStorage.removeItem('expDate');
+      setUser(false);
     }
   }, []);
 
