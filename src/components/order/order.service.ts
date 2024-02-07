@@ -128,7 +128,6 @@ export class OrderService {
       im: [
         { id: 1, name: 'Автовокзал Иваново', time: 0 },
         { id: 2, name: 'Иваново Центральная аптека', time: 1 },
-        { id: 3, name: 'Иваново магазин "Санта"', time: 2 },
         { id: 4, name: 'Иваново Спорткомплекс "Импульс"', time: 3 },
         { id: 5, name: 'Лясковичское лесничество', time: 4 },
         { id: 6, name: 'УПК', time: 5 },
@@ -153,7 +152,6 @@ export class OrderService {
       fromIvanovoToMinsk: [
         { id: 1, name: 'Автовокзал Иваново', time: 0 },
         { id: 2, name: 'Иваново Центральная аптека', time: 1 },
-        { id: 3, name: 'Иваново магазин "Санта"', time: 2 },
         { id: 4, name: 'Иваново Спорткомплекс "Импульс"', time: 3 },
         { id: 5, name: 'Лясковичское лесничество', time: 4 },
         { id: 6, name: 'УПК', time: 5 },
@@ -165,7 +163,6 @@ export class OrderService {
       toIvanovoFromMinsk: [
         { id: 1, name: 'Автовокзал Иваново', time: 0 },
         { id: 2, name: 'Иваново Центральная аптека', time: 1 },
-        { id: 3, name: 'Иваново магазин "Санта"', time: 2 },
         { id: 4, name: 'Иваново Спорткомплекс "Импульс"', time: 3 },
         { id: 5, name: 'Лясковичское лесничество', time: 4 },
         { id: 6, name: 'УПК', time: 5 },
