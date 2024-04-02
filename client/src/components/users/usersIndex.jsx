@@ -1,12 +1,17 @@
-import { Table, Button, Modal } from 'antd';
+import { Table, Button, Modal, Input, Checkbox, Row, Col } from 'antd';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import './index.css';
 
 const UsersIndex = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deletedUser, setDeletedUser] = useState({});
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [isBlock, setIsBlock] = useState(false);
+  const [searchPhoneNumber, setSearchPhoneNumber] = useState('');
+  const [searchName, setSearchName] = useState('');
 
   const handleDelete = (key) => {
     setIsModalOpen(true);
@@ -21,16 +26,18 @@ const UsersIndex = () => {
       const data = await axios.get(`${import.meta.env.VITE_ROUTE}passenger`);
       if (data.status === 200) {
         const passengerData = data.data.passengerData;
-        setData(
-          passengerData.map((el) => ({
-            key: el._id,
-            firstName: el.firstName,
-            lastName: el.lastName,
-            phoneNumber: el.phoneNumber,
-          })),
-        );
+        const elements = passengerData.map((el) => ({
+          key: el._id,
+          firstName: el.firstName,
+          lastName: el.lastName,
+          phoneNumber: el.phoneNumber,
+          isBlock: el.isBlock,
+        }));
+        setData(elements);
+        setFilteredData(elements);
       } else {
         setData([]);
+        setFilteredData([]);
       }
     }
     setIsModalOpen(false);
@@ -41,20 +48,39 @@ const UsersIndex = () => {
   };
 
   useEffect(() => {
+    let res = data;
+    if (isBlock) {
+      res = res.filter((el) => el.isBlock === true);
+    }
+    if (searchName.length) {
+      res = res.filter(
+        (el) =>
+          el.lastName.includes(searchName) || el.firstName.includes(searchName),
+      );
+    }
+    if (searchPhoneNumber.length) {
+      res = res.filter((el) => el.phoneNumber.includes(searchPhoneNumber));
+    }
+    setFilteredData(res);
+  }, [isBlock, searchName, searchPhoneNumber]);
+
+  useEffect(() => {
     const fetchData = async () => {
       const data = await axios.get(`${import.meta.env.VITE_ROUTE}passenger`);
       if (data.status === 200) {
         const passengerData = data.data.passengerData;
-        setData(
-          passengerData.map((el) => ({
-            key: el._id,
-            firstName: el.firstName,
-            lastName: el.lastName,
-            phoneNumber: el.phoneNumber,
-          })),
-        );
+        const elements = passengerData.map((el) => ({
+          key: el._id,
+          firstName: el.firstName,
+          lastName: el.lastName,
+          phoneNumber: el.phoneNumber,
+          isBlock: el.isBlock,
+        }));
+        setData(elements);
+        setFilteredData(elements);
       } else {
         setData([]);
+        setFilteredData([]);
       }
     };
     fetchData().catch(console.error);
@@ -80,7 +106,7 @@ const UsersIndex = () => {
       title: 'Действия',
       key: 'action',
       render: (_, record) => (
-        <>
+        <Row>
           <Link to={`/users/${record.phoneNumber}`}>Подробнее</Link>
           <Button
             type="primary"
@@ -89,14 +115,50 @@ const UsersIndex = () => {
           >
             Удалить
           </Button>
-        </>
+        </Row>
       ),
     },
   ];
 
+  const rowClassName = (record) => {
+    return record.isBlock === true ? 'deleted' : '';
+  };
+
   return (
     <>
-      <Table columns={columns} dataSource={data} />
+      <Row>
+        <Checkbox
+          checked={isBlock}
+          onChange={(e) => {
+            setIsBlock(e.target.checked);
+          }}
+        >
+          Заблокирован?
+        </Checkbox>
+      </Row>
+      <Row>
+        <h3>Номер телефона</h3>
+        <Input
+          value={searchPhoneNumber}
+          onChange={(e) => {
+            setSearchPhoneNumber(e.target.value);
+          }}
+        ></Input>
+      </Row>
+      <Row>
+        <h3>Имя, фамилия</h3>
+        <Input
+          value={searchName}
+          onChange={(e) => {
+            setSearchName(e.target.value);
+          }}
+        ></Input>
+      </Row>
+      <Table
+        columns={columns}
+        dataSource={filteredData}
+        rowClassName={rowClassName}
+      />
       <Modal
         title={`Удалить ${deletedUser.firstName} ${deletedUser.lastName}?`}
         open={isModalOpen}

@@ -16,7 +16,6 @@ const User = () => {
       const userRes = await axios.get(
         `${import.meta.env.VITE_ROUTE}passenger/${id}`,
       );
-      console.log(userRes);
       setUser({ ...userRes.data.existingPassenger });
       const orders = await axios.get(
         `${import.meta.env.VITE_ROUTE}order/info/${
@@ -212,16 +211,10 @@ const User = () => {
         </Col>
       </Row>
       <Row>
-        <Col style={{ fontSize: 24 }} span={8}>
-          имя фамилия: {user.firstName} {user.lastName}
-        </Col>
-        <Col style={{ fontSize: 24 }} span={8}>
-          телефон: {user.phoneNumber}
-        </Col>
-        <Col style={{ fontSize: 24 }} span={8}>
-          заблокирован: {user.isBlock === true ? 'да' : 'нет'}
-        </Col>
+        имя фамилия: {user.firstName} {user.lastName}
       </Row>
+      <Row>телефон: {user.phoneNumber}</Row>
+      <Row>заблокирован: {user.isBlock === true ? 'да' : 'нет'}</Row>
       <Row>
         <Button type="primary" danger onClick={handleBlock}>
           {user.isBlock === true ? `Разблокировать?` : 'Заблокировать?'}
