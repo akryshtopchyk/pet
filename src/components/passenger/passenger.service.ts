@@ -70,6 +70,13 @@ export class PassengerService {
     return existingPassenger;
   }
 
+  async getByPhone(phoneNumber: string): Promise<IPassenger> {
+    const existingPassenger = await this.passengerModel
+      .findOne({ phoneNumber })
+      .exec();
+    return existingPassenger;
+  }
+
   async delete(passengerId: string): Promise<IPassenger> {
     const deletedPassenger = await this.passengerModel.findByIdAndDelete(
       passengerId,

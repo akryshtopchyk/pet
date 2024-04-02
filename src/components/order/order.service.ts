@@ -26,10 +26,10 @@ export class OrderService {
         `Order #${createOrderDto.phoneNumber} already exists`,
       );
     }
-    const passenger = await this.passengerService.getByPhoneNumber(
+    const passenger = await this.passengerService.getByPhone(
       createOrderDto.phoneNumber,
     );
-    if (passenger.isBlock === true) {
+    if (passenger && passenger.isBlock === true) {
       throw new NotFoundException(`block`);
     }
     const newOrder = await new this.orderModel({
