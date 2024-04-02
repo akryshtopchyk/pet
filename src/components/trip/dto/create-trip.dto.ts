@@ -28,4 +28,10 @@ export class CreateTripDto {
   @IsNumber()
   @IsNotEmpty()
   readonly seatCount: number;
+
+  @IsString()
+  readonly car: string;
+
+  @IsString()
+  readonly driver: string;
 }

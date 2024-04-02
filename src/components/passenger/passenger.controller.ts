@@ -72,6 +72,19 @@ export class PassengerController {
     }
   }
 
+  @Get('/id/:id')
+  async getPassengerById(@Res() response, @Param('id') id: string) {
+    try {
+      const existingPassenger = await this.passengerService.getById(id);
+      return response.status(HttpStatus.OK).json({
+        message: 'Passenger found successfully',
+        existingPassenger,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
   @Get('/:phoneNumber')
   async getPassenger(
     @Res() response,

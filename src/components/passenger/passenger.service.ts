@@ -52,6 +52,14 @@ export class PassengerService {
     return passengerData;
   }
 
+  async getById(id: string): Promise<IPassenger> {
+    const existingPassenger = await this.passengerModel.findById(id).exec();
+    if (!existingPassenger) {
+      throw new NotFoundException(`Passenger #${id} not found`);
+    }
+    return existingPassenger;
+  }
+
   async getByPhoneNumber(phoneNumber: string): Promise<IPassenger> {
     const existingPassenger = await this.passengerModel
       .findOne({ phoneNumber })
@@ -89,7 +97,6 @@ export class PassengerService {
     const existingUser = await this.passengerModel.findOne({
       phoneNumber: passenger.phoneNumber,
     });
-    console.log(existingUser);
     if (existingUser) {
       return false;
     }

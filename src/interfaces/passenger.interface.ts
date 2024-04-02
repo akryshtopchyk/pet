@@ -5,4 +5,5 @@ export interface IPassenger extends Document {
   readonly lastName: string;
   readonly password: string;
   readonly phoneNumber: string;
+  readonly isBlock: boolean;
 }

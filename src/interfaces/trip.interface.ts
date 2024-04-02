@@ -11,4 +11,6 @@ export interface ITrip extends Document {
   readonly arrivalStops: Array<ObjectId>;
   readonly departureStops: Array<ObjectId>;
   readonly orders?: number;
+  readonly car?: string;
+  readonly driver?: string;
 }

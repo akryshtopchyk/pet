@@ -41,7 +41,7 @@ export class TripService {
           ),
         },
       })
-      .sort({ date: 'asc' });
+      .sort({ date: 'asc', departureTime: 'asc' });
     if (!tripData || tripData.length == 0) {
       return [];
     }
@@ -58,6 +58,8 @@ export class TripService {
           departureTime: trip.departureTime,
           seatCount: trip.seatCount,
           orders: orders.reduce((a: any, b: any) => a + b.seatCount, 0),
+          car: trip.car,
+          driver: trip.driver,
         };
       }),
     );
@@ -90,6 +92,8 @@ export class TripService {
           departureTime: trip.departureTime,
           seatCount: trip.seatCount,
           orders: orders.reduce((a: any, b: any) => a + b.seatCount, 0),
+          car: trip.car,
+          driver: trip.driver,
         };
       }),
     );
@@ -124,6 +128,8 @@ export class TripService {
           departureTime: trip.departureTime,
           seatCount: trip.seatCount,
           orders: orders.reduce((a: any, b: any) => a + b.seatCount, 0),
+          car: trip.car,
+          driver: trip.driver,
         };
       }),
     );
@@ -158,6 +164,8 @@ export class TripService {
           departureTime: trip.departureTime,
           seatCount: trip.seatCount,
           orders: orders.reduce((a: any, b: any) => a + b.seatCount, 0),
+          car: trip.car,
+          driver: trip.driver,
         };
       }),
     );
@@ -192,6 +200,8 @@ export class TripService {
       arrivalTime: trip.arrivalTime,
       departureTime: trip.departureTime,
       seatCount: trip.seatCount,
+      car: trip.car,
+      driver: trip.driver,
       orders: orders.reduce((a: any, b: any) => a + b.seatCount, 0),
     };
   }
@@ -239,6 +249,8 @@ export class TripService {
           arrivalTime: trip.arrivalTime,
           departureTime: trip.departureTime,
           seatCount: trip.seatCount,
+          car: trip.car,
+          driver: trip.driver,
           order: orders,
         };
       }),

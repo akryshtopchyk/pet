@@ -7,6 +7,7 @@ import NoMatch from './components/noMatch';
 import News from './components/news/news';
 import NewsIndex from './components/news/newsIndex';
 import Users from './components/users/users';
+import User from './components/users/user';
 import UsersIndex from './components/users/usersIndex';
 import Login from './components/login/login';
 import { createContext, useState } from 'react';
@@ -40,7 +41,13 @@ const App = () => {
         {
           path: '/users',
           element: <Users />,
-          children: [{ index: true, element: <UsersIndex /> }],
+          children: [
+            { index: true, element: <UsersIndex /> },
+            {
+              path: '/users/:id',
+              element: <User />,
+            },
+          ],
         },
       ],
     },

@@ -16,8 +16,9 @@ const { TextArea } = Input;
 
 const Trip = () => {
   const [isNewPassenger, setIsNewPassenger] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletedOrder, setDeletedOrder] = useState({});
+  const [loadText, setLoadText] = useState('загрузка');
 
   let { id } = useParams();
 
@@ -34,6 +35,8 @@ const Trip = () => {
   const [stops, setStops] = useState({});
   const [deleted, setDeleted] = useState([]);
   const [newPlaceCount, setNewPlaceCount] = useState(0);
+  const [newCar, setNewCar] = useState('');
+  const [newDriver, setNewDriver] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,7 +100,12 @@ const Trip = () => {
           departureTime: tripData.departureTime,
           seatCount: tripData.seatCount,
           orders: tripData.orders,
+          car: tripData.car,
+          driver: tripData.driver,
         });
+        setNewCar(tripData.car);
+        setNewPlaceCount(tripData.seatCount);
+        setNewDriver(tripData.driver);
       } else {
         setTrip({});
       }
@@ -109,11 +117,19 @@ const Trip = () => {
       }
       setLoad(false);
     };
-    fetchData().catch(console.error);
+    fetchData().catch(() => {
+      setLoadText('Поездка не найдена');
+    });
   }, []);
 
   const changeNewPlaceCount = (value) => {
     setNewPlaceCount(value);
+  };
+  const changeNewCar = (value) => {
+    setNewCar(value.target.value);
+  };
+  const changeNewDriver = (value) => {
+    setNewDriver(value.target.value);
   };
   const changeFirstName = (value) => {
     setFirstName(value.target.value);
@@ -138,7 +154,7 @@ const Trip = () => {
   };
 
   const handleDelete = (key) => {
-    setIsModalOpen(true);
+    setIsDeleteModalOpen(true);
     setDeletedOrder(data.find((el) => el.key === key));
   };
 
@@ -170,11 +186,11 @@ const Trip = () => {
         setData([]);
       }
     }
-    setIsModalOpen(false);
+    setIsDeleteModalOpen(false);
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
+    setIsDeleteModalOpen(false);
   };
 
   const columns = [
@@ -222,9 +238,17 @@ const Trip = () => {
       title: 'Действия',
       key: 'action',
       render: (_, record) => (
-        <Button type="primary" danger onClick={() => handleDelete(record.key)}>
-          Удалить
-        </Button>
+        <>
+          <Button
+            type="primary"
+            danger
+            onClick={() => handleDelete(record.key)}
+          >
+            Удалить
+          </Button>
+          <div style={{ margin: '8px 0' }} />
+          <Link to={`/users/${record.phoneNumber}`}>Подробнее</Link>
+        </>
       ),
     },
   ];
@@ -269,16 +293,24 @@ const Trip = () => {
       dataIndex: 'date',
       key: 'date',
     },
+    {
+      title: 'Действия',
+      key: 'action',
+      render: (_, record) => (
+        <Link to={`/users/${record.phoneNumber}`}>Подробнее</Link>
+      ),
+    },
   ];
 
   const showNewPassenger = () => {
     setIsNewPassenger(!isNewPassenger);
   };
 
-  const updatePlaceCount = async () => {
-    console.log(newPlaceCount);
+  const updateTrip = async () => {
     await axios.put(`${import.meta.env.VITE_ROUTE}trip/${id}`, {
       seatCount: newPlaceCount,
+      car: newCar,
+      driver: newDriver,
     });
     const trip = await axios.get(`${import.meta.env.VITE_ROUTE}trip/${id}`);
     if (trip.status === 200) {
@@ -294,6 +326,8 @@ const Trip = () => {
         departureTime: tripData.departureTime,
         seatCount: tripData.seatCount,
         orders: tripData.orders,
+        car: tripData.car,
+        driver: tripData.driver,
       });
     } else {
       setTrip({});
@@ -465,7 +499,11 @@ const Trip = () => {
   };
 
   if (load) {
-    return 'загрузка';
+    return (
+      <div>
+        <h1>{loadText}</h1>
+      </div>
+    );
   }
   return (
     <>
@@ -475,6 +513,8 @@ const Trip = () => {
             Назад
           </Link>
         </Col>
+      </Row>
+      <Row>
         <Col style={{ fontSize: 24 }} span={6}>
           {getTripTitle(trip.from, trip.to)}
         </Col>
@@ -492,29 +532,63 @@ const Trip = () => {
         <Col style={{ fontSize: 24 }} span={4}>
           цена поездки: {trip.sum}
         </Col>
+        <Col style={{ fontSize: 24 }} span={12}>
+          машина: {trip.car}
+        </Col>
+        <Col style={{ fontSize: 24 }} span={12}>
+          водитель: {trip.driver}
+        </Col>
+      </Row>
+      <Row style={{ marginBottom: '16px' }}>
+        <Card title="Обновление" style={{ width: '500px' }}>
+          <Row>
+            <Col span={12}>
+              <h4 className="new_trip_subtitles">Новое кол-во мест</h4>
+              <InputNumber
+                onChange={changeNewPlaceCount}
+                value={newPlaceCount}
+                placeholder="Новое кол-во мест"
+                type="number"
+                style={{ width: 132 }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <h4 className="new_trip_subtitles">Новая машина</h4>
+              <Input
+                onChange={changeNewCar}
+                value={newCar}
+                placeholder="Новая машина"
+                style={{ width: 424 }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <h4 className="new_trip_subtitles">Новый Водитель</h4>
+              <Input
+                onChange={changeNewDriver}
+                value={newDriver}
+                placeholder="Новый Водитель"
+                style={{ width: 424 }}
+              />
+            </Col>
+          </Row>
+          <div style={{ margin: '8px 0' }} />
+          <Button
+            type="primary"
+            onClick={updateTrip}
+            style={{ marginLeft: '12px' }}
+          >
+            Обновить
+          </Button>
+        </Card>
       </Row>
       <Row>
         <Col span={24}>
           <h3>Пасажиры</h3>
         </Col>
-      </Row>
-      <Row style={{ marginBottom: '16px' }}>
-        <Card title="Новое кол-во мест" style={{ width: '250px' }}>
-          <Row>
-            <InputNumber
-              placeholder="Новое кол-во мест"
-              value={newPlaceCount}
-              onChange={changeNewPlaceCount}
-            />
-            <Button
-              type="primary"
-              onClick={updatePlaceCount}
-              style={{ marginLeft: '12px' }}
-            >
-              Обновить
-            </Button>
-          </Row>
-        </Card>
       </Row>
       <Row>
         <Col span={24}>
@@ -583,12 +657,12 @@ const Trip = () => {
       <Table columns={columns} dataSource={data} />
       <Modal
         title={`Удалить ${deletedOrder.firstName} ${deletedOrder.lastName}?`}
-        open={isModalOpen}
+        open={isDeleteModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
       ></Modal>
       <div style={{ margin: '24px 0' }} />
-      <h5 className="new_trip_subtitles">Отмененные бронирования</h5>
+      <h3>Отмененные бронирования</h3>
       <Table columns={deletedColumns} dataSource={deleted} />
     </>
   );

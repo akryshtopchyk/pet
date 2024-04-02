@@ -5,11 +5,13 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { IOrder } from '../../interfaces/order.interface';
 import { IDeletedOrder } from '../../interfaces/deleted-order.interface';
+import { PassengerService } from '../passenger/passenger.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel('Order') private orderModel: Model<IOrder>,
+    private readonly passengerService: PassengerService,
     @InjectModel('DeletedOrder')
     private deletedOrderModel: Model<IDeletedOrder>,
   ) {}
@@ -23,6 +25,12 @@ export class OrderService {
       throw new NotFoundException(
         `Order #${createOrderDto.phoneNumber} already exists`,
       );
+    }
+    const passenger = await this.passengerService.getByPhoneNumber(
+      createOrderDto.phoneNumber,
+    );
+    if (passenger.isBlock === true) {
+      throw new NotFoundException(`block`);
     }
     const newOrder = await new this.orderModel({
       ...createOrderDto,
@@ -86,6 +94,19 @@ export class OrderService {
     return orderData;
   }
 
+  async getOrdersForInfoByPhoneNumber(phoneNumber: string): Promise<any> {
+    const orderData = await this.orderModel
+      .find({ phoneNumber: phoneNumber })
+      .exec();
+    const deletedOrderData = await this.deletedOrderModel
+      .find({ phoneNumber: phoneNumber })
+      .exec();
+    if (!orderData || !deletedOrderData) {
+      return [];
+    }
+    return { orderData, deletedOrderData };
+  }
+
   async getById(orderId: string): Promise<IOrder> {
     const existingOrder = await this.orderModel.findById(orderId).exec();
     if (!existingOrder) {
@@ -109,7 +130,7 @@ export class OrderService {
       }
       return deletedOrder;
     } catch (e) {
-      console.log(e);
+      throw new NotFoundException(`Order #${orderId} not found`);
     }
   }
 

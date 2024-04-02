@@ -23,6 +23,12 @@ export class Trip {
 
   @Prop()
   seatCount: number;
+
+  @Prop()
+  car: string;
+
+  @Prop()
+  driver: string;
 }
 
 export const TripSchema = SchemaFactory.createForClass(Trip);

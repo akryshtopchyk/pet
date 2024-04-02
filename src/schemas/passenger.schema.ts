@@ -13,6 +13,9 @@ export class Passenger {
 
   @Prop()
   phoneNumber: string;
+
+  @Prop()
+  isBlock: boolean;
 }
 
 export const PassengerSchema = SchemaFactory.createForClass(Passenger);

@@ -1,5 +1,6 @@
 import { Table, Button, Modal } from 'antd';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const UsersIndex = () => {
@@ -79,9 +80,16 @@ const UsersIndex = () => {
       title: 'Действия',
       key: 'action',
       render: (_, record) => (
-        <Button type="primary" danger onClick={() => handleDelete(record.key)}>
-          Удалить
-        </Button>
+        <>
+          <Link to={`/users/${record.phoneNumber}`}>Подробнее</Link>
+          <Button
+            type="primary"
+            danger
+            onClick={() => handleDelete(record.key)}
+          >
+            Удалить
+          </Button>
+        </>
       ),
     },
   ];

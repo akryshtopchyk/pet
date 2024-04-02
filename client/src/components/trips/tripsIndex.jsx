@@ -23,6 +23,8 @@ const TripsIndex = () => {
   const [to, setTo] = useState();
   const [date, setDate] = useState(new Date());
   const [departureTime, setDepartureTime] = useState('');
+  const [car, setCar] = useState('');
+  const [driver, setDriver] = useState('');
   const [seatCount, setSeatCount] = useState(15);
   const [sum, setSum] = useState(25);
   const [data, setData] = useState([]);
@@ -56,6 +58,8 @@ const TripsIndex = () => {
             place: el.seatCount,
             freePlace: el.seatCount - el.orders,
             cost: el.sum,
+            car: el.car,
+            driver: el.driver,
           })),
         );
       }
@@ -120,7 +124,6 @@ const TripsIndex = () => {
       sum &&
       regEx.test(departureTime)
     ) {
-      console.log(from, to);
       const res = await axios.post(`${import.meta.env.VITE_ROUTE}trip`, {
         from,
         to,
@@ -129,6 +132,8 @@ const TripsIndex = () => {
         departureTime,
         seatCount,
         sum,
+        car,
+        driver,
       });
       if (res.status === 201) {
         const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip`);
@@ -142,7 +147,6 @@ const TripsIndex = () => {
   };
 
   const getArrivalTime = (dTime) => {
-    console.log(to, from);
     if (to === 'minsk' || from === 'minsk') {
       const startH = +dTime.split(':')[0] * 60;
       const startM = +dTime.split(':')[1];
@@ -166,7 +170,6 @@ const TripsIndex = () => {
     setFrom(value);
   };
   const handleChangeTo = (value) => {
-    console.log(value);
     setTo(value);
   };
 
@@ -220,6 +223,8 @@ const TripsIndex = () => {
           place: el.seatCount,
           freePlace: el.seatCount - el.orders,
           cost: el.sum,
+          car: el.car,
+          driver: el.driver,
         });
       }
       if (el.from === 'grodno' || el.to === 'grodno') {
@@ -235,6 +240,8 @@ const TripsIndex = () => {
           place: el.seatCount,
           freePlace: el.seatCount - el.orders,
           cost: el.sum,
+          car: el.car,
+          driver: el.driver,
         });
       }
     });
@@ -273,6 +280,16 @@ const TripsIndex = () => {
       title: 'Цена',
       dataIndex: 'cost',
       key: 'cost',
+    },
+    {
+      title: 'Машина',
+      dataIndex: 'car',
+      key: 'car',
+    },
+    {
+      title: 'Водитель',
+      dataIndex: 'driver',
+      key: 'driver',
     },
     {
       title: 'Действия',
@@ -324,6 +341,16 @@ const TripsIndex = () => {
       key: 'cost',
     },
     {
+      title: 'Машина',
+      dataIndex: 'car',
+      key: 'car',
+    },
+    {
+      title: 'Водитель',
+      dataIndex: 'driver',
+      key: 'driver',
+    },
+    {
       title: 'Действия',
       key: 'action',
       render: (_, record) => (
@@ -336,6 +363,14 @@ const TripsIndex = () => {
 
   const handleDepartureTime = (value) => {
     setDepartureTime(value.target.value);
+  };
+
+  const handleCar = (value) => {
+    setCar(value.target.value);
+  };
+
+  const handleDriver = (value) => {
+    setDriver(value.target.value);
   };
 
   return (
@@ -415,6 +450,28 @@ const TripsIndex = () => {
                 placeholder="Цена"
                 type="number"
                 style={{ width: 132 }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <h4 className="new_trip_subtitles">Машина</h4>
+              <Input
+                onChange={handleCar}
+                value={car}
+                placeholder="Машина"
+                style={{ width: 500 }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <h4 className="new_trip_subtitles">Водитель</h4>
+              <Input
+                onChange={handleDriver}
+                value={driver}
+                placeholder="Водитель"
+                style={{ width: 500 }}
               />
             </Col>
           </Row>

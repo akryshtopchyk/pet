@@ -5,6 +5,7 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { OrderSchema } from '../../schemas/order.schema';
 import { DeletedOrderSchema } from 'src/schemas/deleted-order.schema';
+import { PassengersModule } from '../passenger/passenger.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { DeletedOrderSchema } from 'src/schemas/deleted-order.schema';
       { name: 'DeletedOrder', schema: DeletedOrderSchema },
     ]),
     OrdersModule,
+    PassengersModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],

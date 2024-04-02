@@ -110,6 +110,24 @@ export class OrderController {
     }
   }
 
+  @Get('/info/:phoneNumber')
+  async getOrdersForInfoByPhoneNumber(
+    @Res() response,
+    @Param('phoneNumber') number: string,
+  ) {
+    try {
+      const orderData = await this.orderService.getOrdersForInfoByPhoneNumber(
+        number,
+      );
+      return response.status(HttpStatus.OK).json({
+        message: 'All orders data found successfully',
+        orderData,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
   // @Get('/:id')
   // async getOrder(@Res() response, @Param('id') orderId: string) {
   //   try {
