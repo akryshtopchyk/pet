@@ -35,6 +35,7 @@ const Trip = () => {
   const [stops, setStops] = useState({});
   const [deleted, setDeleted] = useState([]);
   const [newPlaceCount, setNewPlaceCount] = useState(0);
+  const [newSum, setNewSum] = useState(0);
   const [newCar, setNewCar] = useState('');
   const [newDriver, setNewDriver] = useState('');
 
@@ -105,6 +106,7 @@ const Trip = () => {
         });
         setNewCar(tripData.car);
         setNewPlaceCount(tripData.seatCount);
+        setNewSum(tripData.sum);
         setNewDriver(tripData.driver);
       } else {
         setTrip({});
@@ -124,6 +126,9 @@ const Trip = () => {
 
   const changeNewPlaceCount = (value) => {
     setNewPlaceCount(value);
+  };
+  const changeSum = (value) => {
+    setNewSum(value);
   };
   const changeNewCar = (value) => {
     setNewCar(value.target.value);
@@ -309,6 +314,7 @@ const Trip = () => {
   const updateTrip = async () => {
     await axios.put(`${import.meta.env.VITE_ROUTE}trip/${id}`, {
       seatCount: newPlaceCount,
+      sum: newSum,
       car: newCar,
       driver: newDriver,
     });
@@ -316,6 +322,7 @@ const Trip = () => {
     if (trip.status === 200) {
       const tripData = trip.data.existingTrip;
       setNewPlaceCount(tripData.seatCount);
+      setNewSum(tripData.sum);
       setTrip({
         id: tripData._id,
         date: tripData.date,
@@ -548,6 +555,18 @@ const Trip = () => {
                 onChange={changeNewPlaceCount}
                 value={newPlaceCount}
                 placeholder="Новое кол-во мест"
+                type="number"
+                style={{ width: 132 }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <h4 className="new_trip_subtitles">Новая цена</h4>
+              <InputNumber
+                onChange={changeSum}
+                value={newSum}
+                placeholder="Новая цена"
                 type="number"
                 style={{ width: 132 }}
               />
