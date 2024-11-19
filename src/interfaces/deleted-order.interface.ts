@@ -13,4 +13,5 @@ export interface IDeletedOrder extends Document {
   readonly lastName: string;
   readonly phoneNumber: string;
   readonly date: Date;
+  readonly isApproved: boolean;
 }

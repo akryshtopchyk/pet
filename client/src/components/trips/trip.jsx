@@ -59,6 +59,7 @@ const Trip = () => {
               fromStop: el.fromStop,
               toStop: el.toStop,
               date: date ? date.toLocaleString('ru-RU') : '',
+              isApproved: el.isApproved,
             };
           }),
         );
@@ -81,6 +82,7 @@ const Trip = () => {
               fromStop: el.fromStop,
               toStop: el.toStop,
               date: date ? date.toLocaleString('ru-RU') : '',
+              isApproved: el.isApproved,
             };
           }),
         );
@@ -184,6 +186,7 @@ const Trip = () => {
               fromStop: el.fromStop,
               toStop: el.toStop,
               date: date ? date.toLocaleString('ru-RU') : '',
+              isApproved: el.isApproved,
             };
           }),
         );
@@ -192,6 +195,42 @@ const Trip = () => {
       }
     }
     setIsDeleteModalOpen(false);
+  };
+
+  const handleApprove = async (orderId, isApproved) => {
+    setLoadText(true);
+    const res = await axios.put(
+      `${import.meta.env.VITE_ROUTE}order/${orderId}`,
+      {
+        isApproved,
+      },
+    );
+    if (res.status === 200) {
+      const data = await axios.get(`${import.meta.env.VITE_ROUTE}order/${id}`);
+      if (data.status === 200) {
+        const orderData = data.data.orderData;
+        setData(
+          orderData.map((el) => {
+            const date = el.date ? new Date(el.date) : '';
+            return {
+              key: el._id,
+              firstName: el.firstName,
+              lastName: el.lastName,
+              phoneNumber: el.phoneNumber,
+              count: el.seatCount,
+              description: el.description,
+              fromStop: el.fromStop,
+              toStop: el.toStop,
+              date: date ? date.toLocaleString('ru-RU') : '',
+              isApproved: el.isApproved,
+            };
+          }),
+        );
+      } else {
+        setData([]);
+      }
+    }
+    setLoadText(false);
   };
 
   const handleCancel = () => {
@@ -238,6 +277,27 @@ const Trip = () => {
       title: 'Дата',
       dataIndex: 'date',
       key: 'date',
+    },
+    {
+      title: 'Потвержден?',
+      render: (_, record) =>
+        record.isApproved ? (
+          <Button
+            type="primary"
+            onClick={() => handleApprove(record.key, false)}
+            danger
+          >
+            Отменить подтверждение
+          </Button>
+        ) : (
+          <Button
+            type="primary"
+            onClick={() => handleApprove(record.key, true)}
+          >
+            Подтвердить
+          </Button>
+        ),
+      key: 'isApproved',
     },
     {
       title: 'Действия',
@@ -299,6 +359,11 @@ const Trip = () => {
       key: 'date',
     },
     {
+      title: 'Потвержден?',
+      render: (_, record) => <p>{record.isApproved === true ? 'да' : 'нет'}</p>,
+      key: 'isApproved',
+    },
+    {
       title: 'Действия',
       key: 'action',
       render: (_, record) => (
@@ -342,6 +407,7 @@ const Trip = () => {
   };
 
   const getFromStops = (from, to) => {
+    console.log(from, to);
     if (from === 'minsk' && to === 'ivanovo') {
       return stops.fromMinskToIvanovo;
     }
@@ -354,8 +420,36 @@ const Trip = () => {
     if (from === 'ivanovo' && to === 'minsk') {
       return stops.fromIvanovoToMinsk;
     }
+
+    if (from === 'moskva' && to === 'pinsk') {
+      return [
+        { id: 1, name: 'Москва (автовокзал саларьево)', time: 0 },
+        { id: 2, name: 'Минск (метро Могилевская)', time: 490 },
+        { id: 4, name: 'Минск(метро Малиновка)"', time: 510 },
+        { id: 5, name: 'Барановичи(корона)', time: 610 },
+        { id: 6, name: 'Ивацевичи(Мартин)', time: 670 },
+        { id: 7, name: 'Телеханы (автовокзал)', time: 710 },
+        { id: 8, name: 'Логишин', time: 740 },
+        { id: 9, name: 'Пинск кВт', time: 770 },
+        { id: 10, name: 'Пинск жд вокзал', time: 780 },
+      ];
+    }
+    if (from === 'pinsk' && to === 'moskva') {
+      return [
+        { id: 1, name: 'Пинск жд вокзал', time: 0 },
+        { id: 2, name: 'Пинск кВт', time: 10 },
+        { id: 4, name: 'Логишин', time: 40 },
+        { id: 5, name: 'Телеханы (автовокзал)', time: 70 },
+        { id: 6, name: 'Ивацевичи(Мартин)', time: 110 },
+        { id: 7, name: 'Барановичи(корона)', time: 170 },
+        { id: 8, name: 'Минск(метро Малиновка)', time: 270 },
+        { id: 9, name: 'Минск (метро Могилевская)', time: 290 },
+        { id: 10, name: 'Москва (автовокзал саларьево)', time: 780 },
+      ];
+    }
   };
   const getToStops = (from, to) => {
+    console.log(from, to);
     if (from === 'minsk' && to === 'ivanovo') {
       return stops.toIvanovoFromMinsk;
     }
@@ -368,18 +462,36 @@ const Trip = () => {
     if (from === 'ivanovo' && to === 'minsk') {
       return stops.toMinskFromIvanovo;
     }
+    if (from === 'moskva' && to === 'pinsk') {
+      return [
+        { id: 1, name: 'Пинск жд вокзал', time: 0 },
+        { id: 2, name: 'Пинск кВт', time: 10 },
+        { id: 4, name: 'Логишин', time: 40 },
+        { id: 5, name: 'Телеханы (автовокзал)', time: 70 },
+        { id: 6, name: 'Ивацевичи(Мартин)', time: 110 },
+        { id: 7, name: 'Барановичи(корона)', time: 170 },
+        { id: 8, name: 'Минск(метро Малиновка)', time: 270 },
+        { id: 9, name: 'Минск (метро Могилевская)', time: 290 },
+        { id: 10, name: 'Москва (автовокзал саларьево)', time: 780 },
+      ];
+    }
+    if (from === 'pinsk' && to === 'moskva') {
+      return [
+        { id: 1, name: 'Москва (автовокзал саларьево)', time: 0 },
+        { id: 2, name: 'Минск (метро Могилевская)', time: 490 },
+        { id: 4, name: 'Минск(метро Малиновка)"', time: 510 },
+        { id: 5, name: 'Барановичи(корона)', time: 610 },
+        { id: 6, name: 'Ивацевичи(Мартин)', time: 670 },
+        { id: 7, name: 'Телеханы (автовокзал)', time: 710 },
+        { id: 8, name: 'Логишин', time: 740 },
+        { id: 9, name: 'Пинск кВт', time: 770 },
+        { id: 10, name: 'Пинск жд вокзал', time: 780 },
+      ];
+    }
   };
 
   const createPassenger = async () => {
-    if (
-      firstName &&
-      lastName &&
-      phoneNumber &&
-      count &&
-      fromStop &&
-      toStop &&
-      description
-    ) {
+    if (firstName && lastName && phoneNumber && count && fromStop && toStop) {
       const fromStops = getFromStops(trip.from, trip.to);
       const fromStopV = fromStops.find((stop) => stop.id === fromStop);
       const toStops = getToStops(trip.from, trip.to);
@@ -388,13 +500,14 @@ const Trip = () => {
         firstName,
         lastName,
         phoneNumber,
-        description,
+        description: description || '.',
         tripId: id,
         fromStop: fromStopV.name,
         fromStopTime: fromStopV.time.toString(),
         toStop: toStopV.name,
         toStopTime: toStopV.time.toString(),
         seatCount: +count,
+        isApproved: false,
       });
       if (res.status === 201) {
         const data = await axios.get(
@@ -415,6 +528,7 @@ const Trip = () => {
                 fromStop: el.fromStop,
                 toStop: el.toStop,
                 date: date ? date.toLocaleString('ru-RU') : '',
+                isApproved: el.isApproved,
               };
             }),
           );
@@ -438,6 +552,12 @@ const Trip = () => {
       case 'grodno':
         newFrom = 'Гродно';
         break;
+      case 'moskva':
+        newFrom = 'Москва';
+        break;
+      case 'pinsk':
+        newFrom = 'Пинск';
+        break;
     }
     switch (to) {
       case 'minsk':
@@ -448,6 +568,12 @@ const Trip = () => {
         break;
       case 'grodno':
         newTo = 'Гродно';
+        break;
+      case 'moskva':
+        newTo = 'Москва';
+        break;
+      case 'pinsk':
+        newTo = 'Пинск';
         break;
     }
     return `${newFrom} - ${newTo}`;
@@ -477,7 +603,34 @@ const Trip = () => {
         label: stop.name,
       }));
     }
+    if (from === 'moskva' && to === 'pinsk') {
+      return [
+        { value: 1, label: 'Москва (автовокзал саларьево)' },
+        { value: 2, label: 'Минск (метро Могилевская)' },
+        { value: 4, label: 'Минск(метро Малиновка)"' },
+        { value: 5, label: 'Барановичи(корона)' },
+        { value: 6, label: 'Ивацевичи(Мартин)' },
+        { value: 7, label: 'Телеханы (автовокзал)' },
+        { value: 8, label: 'Логишин' },
+        { value: 9, label: 'Пинск кВт' },
+        { value: 10, label: 'Пинск жд вокзал' },
+      ];
+    }
+    if (from === 'pinsk' && to === 'moskva') {
+      return [
+        { value: 1, label: 'Пинск жд вокзал' },
+        { value: 2, label: 'Пинск кВт' },
+        { value: 4, label: 'Логишин' },
+        { value: 5, label: 'Телеханы (автовокзал)' },
+        { value: 6, label: 'Ивацевичи(Мартин)' },
+        { value: 7, label: 'Барановичи(корона)' },
+        { value: 8, label: 'Минск(метро Малиновка)' },
+        { value: 9, label: 'Минск (метро Могилевская)' },
+        { value: 10, label: 'Москва (автовокзал саларьево)' },
+      ];
+    }
   };
+
   const getToStopsTitles = (from, to) => {
     if (from === 'minsk' && to === 'ivanovo') {
       return stops.toIvanovoFromMinsk.map((stop) => ({
@@ -502,6 +655,30 @@ const Trip = () => {
         value: stop.id,
         label: stop.name,
       }));
+    }
+    if (from === 'moskva' && to === 'pinsk') {
+      return [
+        { value: 1, label: 'Пинск жд вокзал', time: 0 },
+        { value: 2, label: 'Пинск кВт', time: 1 },
+        { value: 4, label: 'логишин', time: 3 },
+        { value: 5, label: 'ивацевичи(Мартин)', time: 4 },
+        { value: 6, label: 'барановичи(корона)', time: 5 },
+        { value: 7, label: 'Минск(метро Малиновка)', time: 10 },
+        { value: 8, label: 'Минск (метро Могилевская)', time: 16 },
+        { value: 9, label: 'Москва (автовокзал саларьево)', time: 50 },
+      ];
+    }
+    if (from === 'pinsk' && to === 'moskva') {
+      return [
+        { value: 1, label: 'Москва (автовокзал саларьево)', time: 0 },
+        { value: 2, label: 'Минск (метро Могилевская)', time: 1 },
+        { value: 4, label: 'Минск(метро Малиновка)"', time: 3 },
+        { value: 5, label: 'барановичи(корона)', time: 4 },
+        { value: 6, label: 'ивацевичи(Мартин)', time: 5 },
+        { value: 7, label: 'логишин', time: 10 },
+        { value: 8, label: 'Пинск кВт', time: 16 },
+        { value: 9, label: 'Пинск жд вокзал', time: 50 },
+      ];
     }
   };
 

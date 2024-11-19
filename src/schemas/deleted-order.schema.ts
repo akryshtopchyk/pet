@@ -35,6 +35,9 @@ export class DeletedOrder {
 
   @Prop({ required: false })
   date: Date;
+
+  @Prop({ required: false })
+  isApproved: boolean;
 }
 
 export const DeletedOrderSchema = SchemaFactory.createForClass(DeletedOrder);

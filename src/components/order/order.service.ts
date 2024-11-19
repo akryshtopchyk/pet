@@ -35,6 +35,7 @@ export class OrderService {
     const newOrder = await new this.orderModel({
       ...createOrderDto,
       date: new Date(),
+      isApproved: false,
     });
     const a = newOrder.save();
     return a;

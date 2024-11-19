@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsBoolean,
+  IsOptional,
+} from 'class-validator';
 import { ObjectId } from 'mongoose';
 
 export class CreateOrderDto {
@@ -40,6 +46,10 @@ export class CreateOrderDto {
   @IsString()
   @IsNotEmpty()
   readonly phoneNumber: string;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly isApproved?: boolean;
 
   readonly date: Date;
 }

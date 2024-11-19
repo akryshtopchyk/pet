@@ -35,6 +35,9 @@ export class Order {
 
   @Prop({ required: false })
   date: Date;
+
+  @Prop({ required: false })
+  isApproved: boolean;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

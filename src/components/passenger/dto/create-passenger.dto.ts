@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreatePassengerDto {
   @IsString()
@@ -19,4 +19,8 @@ export class CreatePassengerDto {
 
   @IsBoolean()
   readonly isBlock: boolean;
+
+  @IsString()
+  @IsOptional()
+  readonly note: string;
 }

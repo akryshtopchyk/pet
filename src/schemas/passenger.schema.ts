@@ -16,6 +16,9 @@ export class Passenger {
 
   @Prop()
   isBlock: boolean;
+
+  @Prop()
+  note: string;
 }
 
 export const PassengerSchema = SchemaFactory.createForClass(Passenger);

@@ -29,6 +29,7 @@ const TripsIndex = () => {
   const [sum, setSum] = useState(25);
   const [data, setData] = useState([]);
   const [grodnoData, setGrodnoData] = useState([]);
+  const [moskvaData, setMoskvaData] = useState([]);
   const [history, setHistory] = useState([]);
 
   const onChangeDate = (date, dateString) => {
@@ -79,6 +80,12 @@ const TripsIndex = () => {
       case 'grodno':
         newFrom = 'Гродно';
         break;
+      case 'moskva':
+        newFrom = 'Москва';
+        break;
+      case 'pinsk':
+        newFrom = 'Пинск';
+        break;
     }
     switch (to) {
       case 'minsk':
@@ -89,6 +96,12 @@ const TripsIndex = () => {
         break;
       case 'grodno':
         newTo = 'Гродно';
+        break;
+      case 'moskva':
+        newTo = 'Москва';
+        break;
+      case 'pinsk':
+        newTo = 'Пинск';
         break;
     }
     return `${newFrom} - ${newTo}`;
@@ -182,8 +195,11 @@ const TripsIndex = () => {
     if (trip) {
       setDeletedTrip(trip);
       setIsModalOpen(true);
-    } else {
+    } else if (grodnoData.find((el) => el.key === key)) {
       setDeletedTrip(grodnoData.find((el) => el.key === key));
+      setIsModalOpen(true);
+    } else if (moskvaData.find((el) => el.key === key)) {
+      setDeletedTrip(moskvaData.find((el) => el.key === key));
       setIsModalOpen(true);
     }
   };
@@ -209,6 +225,7 @@ const TripsIndex = () => {
   const setAllData = (tripData) => {
     const minsk = [];
     const grodno = [];
+    const moskva = [];
     tripData.forEach((el) => {
       if (el.from === 'minsk' || el.to === 'minsk') {
         minsk.push({
@@ -244,8 +261,26 @@ const TripsIndex = () => {
           driver: el.driver,
         });
       }
+      if (el.from === 'moskva' || el.to === 'moskva') {
+        moskva.push({
+          key: el._id,
+          tripTitle: getTripTitle(el.from, el.to),
+          date: `${new Date(el.date).getDate()}.${
+            new Date(el.date).getMonth() + 1
+          }.${new Date(el.date).getFullYear()} - ${getDay(
+            new Date(el.date).getDay(),
+          )}`,
+          dateTime: el.departureTime,
+          place: el.seatCount,
+          freePlace: el.seatCount - el.orders,
+          cost: el.sum,
+          car: el.car,
+          driver: el.driver,
+        });
+      }
     });
 
+    setMoskvaData(moskva);
     setData(minsk);
     setGrodnoData(grodno);
   };
@@ -400,6 +435,8 @@ const TripsIndex = () => {
                   { value: 'minsk', label: 'Минск' },
                   { value: 'ivanovo', label: 'Иваново' },
                   { value: 'grodno', label: 'Гродно' },
+                  { value: 'moskva', label: 'Москва' },
+                  { value: 'pinsk', label: 'Пинск' },
                 ]}
               />
             </Col>
@@ -412,6 +449,8 @@ const TripsIndex = () => {
                   { value: 'minsk', label: 'Минск' },
                   { value: 'ivanovo', label: 'Иваново' },
                   { value: 'grodno', label: 'Гродно' },
+                  { value: 'moskva', label: 'Москва' },
+                  { value: 'pinsk', label: 'Пинск' },
                 ]}
               />
             </Col>
@@ -496,6 +535,14 @@ const TripsIndex = () => {
         </Col>
       </Row>
       <Table columns={columns} dataSource={grodnoData} />
+
+      <div style={{ margin: '24px 0' }} />
+      <Row>
+        <Col span={24}>
+          <h1>Пинск-Москва-Пинск</h1>
+        </Col>
+      </Row>
+      <Table columns={columns} dataSource={moskvaData} />
 
       <Row>
         <Col span={24}>

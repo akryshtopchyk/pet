@@ -1,8 +1,10 @@
-import { Col, Row, Table, Button, Modal } from 'antd';
+import { Col, Row, Table, Button, Modal, Input } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './index.css';
+
+const { TextArea } = Input;
 
 const User = () => {
   let { id } = useParams();
@@ -10,6 +12,7 @@ const User = () => {
   const [user, setUser] = useState({});
   const [load, setLoad] = useState(true);
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
+  const [note, setNote] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,6 +20,7 @@ const User = () => {
         `${import.meta.env.VITE_ROUTE}passenger/${id}`,
       );
       setUser({ ...userRes.data.existingPassenger });
+      setNote(userRes.data.existingPassenger.note);
       const orders = await axios.get(
         `${import.meta.env.VITE_ROUTE}order/info/${
           userRes.data.existingPassenger.phoneNumber
@@ -50,6 +54,7 @@ const User = () => {
                 tripId: el.tripId,
                 date: date ? date.toLocaleString('ru-RU') : '',
                 isDeleted: el.isDeleted === true ? 'да' : 'нет',
+                isApproved: el.isApproved === true ? 'да' : 'нет',
               };
             })
             .sort(
@@ -65,6 +70,18 @@ const User = () => {
     };
     fetchData().catch(console.error);
   }, []);
+
+  const handleUpdateNote = async () => {
+    try {
+      await axios.put(`${import.meta.env.VITE_ROUTE}passenger/${user._id}`, {
+        note: note,
+      });
+      alert('Обновлен');
+    } catch (e) {
+      console.log(e);
+      alert('Ошибка');
+    }
+  };
 
   const handleOk = async () => {
     setLoad(true);
@@ -113,6 +130,7 @@ const User = () => {
                 tripId: el.tripId,
                 date: date ? date.toLocaleString('ru-RU') : '',
                 isDeleted: el.isDeleted === true ? 'да' : 'нет',
+                isApproved: el.isApproved === true ? 'да' : 'нет',
               };
             })
             .sort(
@@ -183,6 +201,11 @@ const User = () => {
       key: 'isDeleted',
     },
     {
+      title: 'Потвержденная',
+      dataIndex: 'isApproved',
+      key: 'isApproved',
+    },
+    {
       title: 'Действия',
       key: 'action',
       render: (_, record) => (
@@ -218,6 +241,18 @@ const User = () => {
       <Row>
         <Button type="primary" danger onClick={handleBlock}>
           {user.isBlock === true ? `Разблокировать?` : 'Заблокировать?'}
+        </Button>
+      </Row>
+      <Row>
+        <h3>Заметка</h3>
+        <TextArea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Заметка"
+          autoSize={{ minRows: 3, maxRows: 100 }}
+        />
+        <Button type="primary" onClick={handleUpdateNote}>
+          Обновить
         </Button>
       </Row>
       <Row>
