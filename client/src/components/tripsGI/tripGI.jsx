@@ -14,7 +14,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 const { TextArea } = Input;
 
-const Trip = () => {
+const TripGI = () => {
   const [isNewPassenger, setIsNewPassenger] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletedOrder, setDeletedOrder] = useState({});
@@ -407,6 +407,7 @@ const Trip = () => {
   };
 
   const getFromStops = (from, to) => {
+    console.log(from, to);
     if (from === 'minsk' && to === 'ivanovo') {
       return stops.fromMinskToIvanovo;
     }
@@ -797,4 +798,4 @@ const Trip = () => {
   );
 };
 
-export default Trip;
+export default TripGI;

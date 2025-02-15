@@ -66,6 +66,86 @@ export class TripService {
     return t;
   }
 
+  async getGIAll(): Promise<any[]> {
+    try {
+      const now = new Date();
+      const tripData = await this.tripModel
+        .find({
+          date: {
+            $gte: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+          },
+        })
+        .or([{ from: 'grodno' }, { to: 'grodno' }])
+        .sort({ date: 'asc', departureTime: 'asc' });
+      if (!tripData || tripData.length == 0) {
+        return [];
+      }
+      const t = await Promise.all(
+        tripData.map(async (trip) => {
+          const orders = await this.orderService.getByTripId(trip._id);
+          return {
+            _id: trip._id,
+            date: trip.date,
+            from: trip.from,
+            to: trip.to,
+            sum: trip.sum,
+            arrivalTime: trip.arrivalTime,
+            departureTime: trip.departureTime,
+            seatCount: trip.seatCount,
+            orders: orders.reduce((a: any, b: any) => a + b.seatCount, 0),
+            car: trip.car,
+            driver: trip.driver,
+          };
+        }),
+      );
+      return t;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async getMIAll(): Promise<any[]> {
+    const tripData = await this.tripModel
+      .find({
+        date: {
+          $gte: new Date(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate(),
+          ),
+        },
+      })
+      .or([
+        { from: 'minsk' },
+        { to: 'minsk' },
+        { from: 'moskva' },
+        { to: 'moskva' },
+      ])
+      .sort({ date: 'asc', departureTime: 'asc' });
+    if (!tripData || tripData.length == 0) {
+      return [];
+    }
+    const t = await Promise.all(
+      tripData.map(async (trip) => {
+        const orders = await this.orderService.getByTripId(trip._id);
+        return {
+          _id: trip._id,
+          date: trip.date,
+          from: trip.from,
+          to: trip.to,
+          sum: trip.sum,
+          arrivalTime: trip.arrivalTime,
+          departureTime: trip.departureTime,
+          seatCount: trip.seatCount,
+          orders: orders.reduce((a: any, b: any) => a + b.seatCount, 0),
+          car: trip.car,
+          driver: trip.driver,
+        };
+      }),
+    );
+    return t;
+  }
+
   async getHistory(): Promise<any[]> {
     const tripData = await this.tripModel.find({
       date: {

@@ -7,7 +7,7 @@ export class AppController {
 
   @Post()
   async login(@Res() response, @Body() cred): Promise<boolean> {
-    if (cred.login === 'admin' && cred.password === '123password@!1') {
+    if (cred.login === 'admin' && cred.password === '1password@!123') {
       return response.json(true);
     }
     if (cred.login === 'andrey' && cred.password === 'andrey123') {

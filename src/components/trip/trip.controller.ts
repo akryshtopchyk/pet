@@ -64,6 +64,32 @@ export class TripController {
     }
   }
 
+  @Get('/gi')
+  async getTripsGI(@Res() response) {
+    try {
+      const tripData = await this.tripService.getGIAll();
+      return response.status(HttpStatus.OK).json({
+        message: 'All trips data found successfully',
+        tripData,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Get('/mi')
+  async getTripsMI(@Res() response) {
+    try {
+      const tripData = await this.tripService.getMIAll();
+      return response.status(HttpStatus.OK).json({
+        message: 'All trips data found successfully',
+        tripData,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
   @Get('/history')
   async getHistoryTrips(@Res() response) {
     try {

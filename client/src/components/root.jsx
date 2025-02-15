@@ -12,7 +12,12 @@ const Root = () => {
         </Row>
         <Row style={{ margin: '12px' }}>
           <Link to="/trips" style={{ fontSize: 32 }}>
-            Поездки
+            Поездки Минск - Иваново
+          </Link>
+        </Row>
+        <Row style={{ margin: '12px' }}>
+          <Link to="/tripsGI" style={{ fontSize: 32 }}>
+            Поездки Гродно - Иваново
           </Link>
         </Row>
         <Row style={{ margin: '12px' }}>

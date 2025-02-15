@@ -15,7 +15,7 @@ import { useState, useEffect } from 'react';
 import './index.css';
 import axios from 'axios';
 
-const TripsIndex = () => {
+const TripsGIIndex = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deletedTrip, setDeletedTrip] = useState({});
   const [isNewTrip, setIsNewTrip] = useState(false);
@@ -27,9 +27,7 @@ const TripsIndex = () => {
   const [driver, setDriver] = useState('');
   const [seatCount, setSeatCount] = useState(15);
   const [sum, setSum] = useState(25);
-  const [data, setData] = useState([]);
-  // const [grodnoData, setGrodnoData] = useState([]);
-  const [moskvaData, setMoskvaData] = useState([]);
+  const [grodnoData, setGrodnoData] = useState([]);
   const [history, setHistory] = useState([]);
 
   const onChangeDate = (date, dateString) => {
@@ -38,7 +36,7 @@ const TripsIndex = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip/mi`);
+      const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip/gi`);
       if (data.status === 200) {
         const tripData = data.data.tripData;
         setAllData(tripData);
@@ -149,7 +147,7 @@ const TripsIndex = () => {
         driver,
       });
       if (res.status === 201) {
-        const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip/mi`);
+        const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip/gi`);
         const tripData = data.data.tripData;
         setAllData(tripData);
       }
@@ -191,15 +189,9 @@ const TripsIndex = () => {
   };
 
   const handleDelete = (key) => {
-    const trip = data.find((el) => el.key === key);
+    const trip = grodnoData.find((el) => el.key === key);
     if (trip) {
       setDeletedTrip(trip);
-      setIsModalOpen(true);
-      // } else if (grodnoData.find((el) => el.key === key)) {
-      //   setDeletedTrip(grodnoData.find((el) => el.key === key));
-      //   setIsModalOpen(true);
-    } else if (moskvaData.find((el) => el.key === key)) {
-      setDeletedTrip(moskvaData.find((el) => el.key === key));
       setIsModalOpen(true);
     }
   };
@@ -209,7 +201,7 @@ const TripsIndex = () => {
       `${import.meta.env.VITE_ROUTE}trip/${deletedTrip.key}`,
     );
     if (res.status === 200) {
-      const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip/mi`);
+      const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip/gi`);
       if (data.status === 200) {
         const tripData = data.data.tripData;
         setAllData(tripData);
@@ -223,46 +215,10 @@ const TripsIndex = () => {
   };
 
   const setAllData = (tripData) => {
-    const minsk = [];
     const grodno = [];
-    const moskva = [];
     tripData.forEach((el) => {
-      if (el.from === 'minsk' || el.to === 'minsk') {
-        minsk.push({
-          key: el._id,
-          tripTitle: getTripTitle(el.from, el.to),
-          date: `${new Date(el.date).getDate()}.${
-            new Date(el.date).getMonth() + 1
-          }.${new Date(el.date).getFullYear()} - ${getDay(
-            new Date(el.date).getDay(),
-          )}`,
-          dateTime: el.departureTime,
-          place: el.seatCount,
-          freePlace: el.seatCount - el.orders,
-          cost: el.sum,
-          car: el.car,
-          driver: el.driver,
-        });
-      }
-      // if (el.from === 'grodno' || el.to === 'grodno') {
-      //   grodno.push({
-      //     key: el._id,
-      //     tripTitle: getTripTitle(el.from, el.to),
-      //     date: `${new Date(el.date).getDate()}.${
-      //       new Date(el.date).getMonth() + 1
-      //     }.${new Date(el.date).getFullYear()} - ${getDay(
-      //       new Date(el.date).getDay(),
-      //     )}`,
-      //     dateTime: el.departureTime,
-      //     place: el.seatCount,
-      //     freePlace: el.seatCount - el.orders,
-      //     cost: el.sum,
-      //     car: el.car,
-      //     driver: el.driver,
-      //   });
-      // }
-      if (el.from === 'moskva' || el.to === 'moskva') {
-        moskva.push({
+      if (el.from === 'grodno' || el.to === 'grodno') {
+        grodno.push({
           key: el._id,
           tripTitle: getTripTitle(el.from, el.to),
           date: `${new Date(el.date).getDate()}.${
@@ -280,9 +236,7 @@ const TripsIndex = () => {
       }
     });
 
-    setMoskvaData(moskva);
-    setData(minsk);
-    // setGrodnoData(grodno);
+    setGrodnoData(grodno);
   };
 
   const columns = [
@@ -521,28 +475,14 @@ const TripsIndex = () => {
         </Card>
       </Row>
       <div style={{ margin: '24px 0' }} />
-      <Row>
-        <Col span={24}>
-          <h1>Иваново-Минск-Иваново</h1>
-        </Col>
-      </Row>
-      <Table columns={columns} dataSource={data} />
 
-      {/* <div style={{ margin: '24px 0' }} />
+      <div style={{ margin: '24px 0' }} />
       <Row>
         <Col span={24}>
           <h1>Иваново-Гродно-Иваново</h1>
         </Col>
       </Row>
-      <Table columns={columns} dataSource={grodnoData} /> */}
-
-      <div style={{ margin: '24px 0' }} />
-      <Row>
-        <Col span={24}>
-          <h1>Пинск-Москва-Пинск</h1>
-        </Col>
-      </Row>
-      <Table columns={columns} dataSource={moskvaData} />
+      <Table columns={columns} dataSource={grodnoData} />
 
       <Row>
         <Col span={24}>
@@ -562,4 +502,4 @@ const TripsIndex = () => {
   );
 };
 
-export default TripsIndex;
+export default TripsGIIndex;
