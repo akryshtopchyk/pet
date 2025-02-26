@@ -8,6 +8,7 @@ import {
   Res,
   HttpStatus,
   Put,
+  Query,
 } from '@nestjs/common';
 import { TripService } from './trip.service';
 import { CreateTripDto } from './dto/create-trip.dto';
@@ -78,9 +79,9 @@ export class TripController {
   }
 
   @Get('/mi')
-  async getTripsMI(@Res() response) {
+  async getTripsMI(@Res() response, @Query('isFull') isFull: string) {
     try {
-      const tripData = await this.tripService.getMIAll();
+      const tripData = await this.tripService.getMIAll(isFull);
       return response.status(HttpStatus.OK).json({
         message: 'All trips data found successfully',
         tripData,

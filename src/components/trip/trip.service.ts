@@ -104,30 +104,54 @@ export class TripService {
     }
   }
 
-  async getMIAll(): Promise<any[]> {
-    const tripData = await this.tripModel
-      .find({
-        date: {
-          $gte: new Date(
-            new Date().getFullYear(),
-            new Date().getMonth(),
-            new Date().getDate(),
-          ),
-        },
-      })
-      .or([
-        { from: 'minsk' },
-        { to: 'minsk' },
-        { from: 'moskva' },
-        { to: 'moskva' },
-      ])
-      .sort({ date: 'asc', departureTime: 'asc' });
+  async getMIAll(isFull: string): Promise<any[]> {
+    let tripData = [];
+    if (isFull === 'true') {
+      tripData = await this.tripModel
+        .find({
+          date: {
+            $gte: new Date(
+              new Date().getFullYear(),
+              new Date().getMonth(),
+              new Date().getDate(),
+            ),
+          },
+        })
+        .or([
+          { from: 'minsk' },
+          { to: 'minsk' },
+          { from: 'moskva' },
+          { to: 'moskva' },
+        ])
+        .sort({ date: 'asc', departureTime: 'asc' });
+    } else {
+      const date = new Date();
+      date.setDate(date.getDate() + 8);
+      tripData = await this.tripModel
+        .find({
+          date: {
+            $gte: new Date(
+              new Date().getFullYear(),
+              new Date().getMonth(),
+              new Date().getDate(),
+            ),
+            $lte: date,
+          },
+        })
+        .or([
+          { from: 'minsk' },
+          { to: 'minsk' },
+          { from: 'moskva' },
+          { to: 'moskva' },
+        ])
+        .sort({ date: 'asc', departureTime: 'asc' });
+    }
     if (!tripData || tripData.length == 0) {
       return [];
     }
     const t = await Promise.all(
       tripData.map(async (trip) => {
-        const orders = await this.orderService.getByTripId(trip._id);
+        const orders = await this.orderService.getByTripIdData(trip._id);
         return {
           _id: trip._id,
           date: trip.date,

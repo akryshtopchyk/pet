@@ -72,6 +72,17 @@ export class OrderService {
     return orderData;
   }
 
+  async getByTripIdData(tripId: string): Promise<IOrder[]> {
+    const orderData = await this.orderModel
+      .find({ tripId: tripId })
+      .select({ _id: 0, seatCount: 1 })
+      .exec();
+    if (!orderData || orderData.length == 0) {
+      return [];
+    }
+    return orderData;
+  }
+
   async getByTripIdAndPhone(
     tripId: string,
     phoneNumber: string,

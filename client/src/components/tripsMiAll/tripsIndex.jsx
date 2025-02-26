@@ -15,7 +15,7 @@ import { useState, useEffect } from 'react';
 import './index.css';
 import axios from 'axios';
 
-const TripsIndex = () => {
+const TripsIndexMI = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deletedTrip, setDeletedTrip] = useState({});
   const [isNewTrip, setIsNewTrip] = useState(false);
@@ -39,7 +39,7 @@ const TripsIndex = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await axios.get(
-        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=false`,
+        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=true`,
       );
       if (data.status === 200) {
         const tripData = data.data.tripData;
@@ -152,7 +152,7 @@ const TripsIndex = () => {
       });
       if (res.status === 201) {
         const data = await axios.get(
-          `${import.meta.env.VITE_ROUTE}trip/mi?isFull=false`,
+          `${import.meta.env.VITE_ROUTE}trip/mi?isFull=true`,
         );
         const tripData = data.data.tripData;
         setAllData(tripData);
@@ -214,7 +214,7 @@ const TripsIndex = () => {
     );
     if (res.status === 200) {
       const data = await axios.get(
-        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=false`,
+        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=true`,
       );
       if (data.status === 200) {
         const tripData = data.data.tripData;
@@ -568,4 +568,4 @@ const TripsIndex = () => {
   );
 };
 
-export default TripsIndex;
+export default TripsIndexMI;
