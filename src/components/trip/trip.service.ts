@@ -41,6 +41,7 @@ export class TripService {
           ),
         },
       })
+      .lean()
       .sort({ date: 'asc', departureTime: 'asc' });
     if (!tripData || tripData.length == 0) {
       return [];
@@ -76,6 +77,7 @@ export class TripService {
           },
         })
         .or([{ from: 'grodno' }, { to: 'grodno' }])
+        .lean()
         .sort({ date: 'asc', departureTime: 'asc' });
       if (!tripData || tripData.length == 0) {
         return [];
@@ -123,6 +125,7 @@ export class TripService {
           { from: 'moskva' },
           { to: 'moskva' },
         ])
+        .lean()
         .sort({ date: 'asc', departureTime: 'asc' });
     } else {
       const date = new Date();
@@ -144,6 +147,7 @@ export class TripService {
           { from: 'moskva' },
           { to: 'moskva' },
         ])
+        .lean()
         .sort({ date: 'asc', departureTime: 'asc' });
     }
     if (!tripData || tripData.length == 0) {

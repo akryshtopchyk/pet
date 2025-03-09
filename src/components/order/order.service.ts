@@ -72,9 +72,10 @@ export class OrderService {
     return orderData;
   }
 
-  async getByTripIdData(tripId: string): Promise<IOrder[]> {
+  async getByTripIdData(tripId: string): Promise<any[]> {
     const orderData = await this.orderModel
       .find({ tripId: tripId })
+      .lean()
       .select({ _id: 0, seatCount: 1 })
       .exec();
     if (!orderData || orderData.length == 0) {
