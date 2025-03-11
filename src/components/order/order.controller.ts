@@ -17,6 +17,21 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @Get('/getAll')
+  async getAll(@Res() response) {
+    try {
+      const newOrder = await this.orderService.getAll();
+      return response.status(HttpStatus.CREATED).json(newOrder);
+    } catch (err) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        statusCode: 400,
+        message: 'Error: Order not created!',
+        error: 'Bad Request',
+        err,
+      });
+    }
+  }
+
   @Post()
   async createOrder(@Res() response, @Body() createOrderDto: CreateOrderDto) {
     try {
