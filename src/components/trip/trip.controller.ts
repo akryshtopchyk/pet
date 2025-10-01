@@ -68,7 +68,7 @@ export class TripController {
   @Get('/gi')
   async getTripsGI(@Res() response) {
     try {
-      const tripData = await this.tripService.getGIAll();
+      const tripData = await this.tripService.getNewGIAll();
       return response.status(HttpStatus.OK).json({
         message: 'All trips data found successfully',
         tripData,
@@ -81,7 +81,7 @@ export class TripController {
   @Get('/mi')
   async getTripsMI(@Res() response, @Query('isFull') isFull: string) {
     try {
-      const tripData = await this.tripService.getMIAll(isFull);
+      const tripData = await this.tripService.getNewMIAll(isFull);
       return response.status(HttpStatus.OK).json({
         message: 'All trips data found successfully',
         tripData,

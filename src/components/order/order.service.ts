@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { IOrder } from '../../interfaces/order.interface';
@@ -17,7 +22,7 @@ export class OrderService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<IOrder> {
-    const existingOrder = await this.orderModel.findOne({
+     const existingOrder = await this.orderModel.findOne({
       phoneNumber: createOrderDto.phoneNumber,
       tripId: createOrderDto.tripId,
     });
@@ -39,6 +44,32 @@ export class OrderService {
     });
     const a = newOrder.save();
     return a;
+  }
+
+  async newCreate(createOrderDto: CreateOrderDto): Promise<IOrder> {
+    const [existingOrder, passenger] = await Promise.all([
+      this.orderModel
+        .findOne({
+          phoneNumber: createOrderDto.phoneNumber,
+          tripId: createOrderDto.tripId,
+        })
+        .lean(),
+      this.passengerService.getByPhone(createOrderDto.phoneNumber),
+    ]);
+    if (existingOrder) {
+      throw new ConflictException(
+        `Order with phone number ${createOrderDto.phoneNumber} already exists for this trip`,
+      );
+    }
+    if (passenger?.isBlock) {
+      throw new ForbiddenException('Passenger is blocked');
+    }
+    const newOrder = new this.orderModel({
+      ...createOrderDto,
+      date: new Date(),
+      isApproved: false,
+    });
+    return await newOrder.save();
   }
 
   async update(
@@ -275,5 +306,13 @@ export class OrderService {
       return [];
     }
     return orderData;
+  }
+  async getByTripIds(
+    tripIds: Types.ObjectId[],
+  ): Promise<Array<{ tripId: Types.ObjectId; seatCount: number }>> {
+    return this.orderModel
+      .find({ tripId: { $in: tripIds } })
+      .select({ tripId: 1, seatCount: 1 })
+      .lean();
   }
 }

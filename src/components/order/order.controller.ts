@@ -35,7 +35,7 @@ export class OrderController {
   @Post()
   async createOrder(@Res() response, @Body() createOrderDto: CreateOrderDto) {
     try {
-      const newOrder = await this.orderService.create(createOrderDto);
+      const newOrder = await this.orderService.newCreate(createOrderDto);
       return response.status(HttpStatus.CREATED).json({
         message: 'Order has been created successfully',
         newOrder,

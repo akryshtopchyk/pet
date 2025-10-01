@@ -451,7 +451,16 @@ const TripGI = () => {
   };
 
   const createPassenger = async () => {
-    if (firstName && lastName && phoneNumber && count && fromStop && toStop) {
+    const regex = /^[0-9+]+$/;
+    if (
+      firstName &&
+      lastName &&
+      phoneNumber &&
+      regex.test(phoneNumber) &&
+      count &&
+      fromStop &&
+      toStop
+    ) {
       const fromStops = getFromStops(trip.from, trip.to);
       const fromStopV = fromStops.find((stop) => stop.id === fromStop);
       const toStops = getToStops(trip.from, trip.to);
@@ -497,6 +506,8 @@ const TripGI = () => {
         }
       }
       setIsNewPassenger(!isNewPassenger);
+    } else {
+      console.error('error');
     }
   };
 

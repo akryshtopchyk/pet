@@ -30,6 +30,59 @@ export class TripService {
     return existingTrip;
   }
 
+  async getNewAll(): Promise<any[]> {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const tripData = await this.tripModel
+      .find({
+        date: { $gte: startOfToday },
+      })
+      .select({
+        _id: 1,
+        date: 1,
+        from: 1,
+        to: 1,
+        sum: 1,
+        arrivalTime: 1,
+        departureTime: 1,
+        seatCount: 1,
+        car: 1,
+        driver: 1,
+      })
+      .sort({ date: 1, departureTime: 1 })
+      .lean()
+      .exec();
+
+    if (!tripData.length) {
+      return [];
+    }
+
+    const tripIds = tripData.map((trip) => trip._id);
+
+    const orders = await this.orderService.getByTripIds(tripIds);
+
+    const ordersMap = orders.reduce((acc, order) => {
+      const tripIdStr = order.tripId.toString();
+      acc.set(tripIdStr, (acc.get(tripIdStr) || 0) + order.seatCount);
+      return acc;
+    }, new Map());
+
+    return tripData.map((trip) => ({
+      _id: trip._id,
+      date: trip.date,
+      from: trip.from,
+      to: trip.to,
+      sum: trip.sum,
+      arrivalTime: trip.arrivalTime,
+      departureTime: trip.departureTime,
+      seatCount: trip.seatCount,
+      orders: ordersMap.get(trip._id.toString()) || 0, // если нет заказов, то 0
+      car: trip.car,
+      driver: trip.driver,
+    }));
+  }
+
   async getAll(): Promise<any[]> {
     const tripData = await this.tripModel
       .find({
@@ -106,6 +159,67 @@ export class TripService {
     }
   }
 
+  async getNewGIAll(): Promise<any[]> {
+    const now = new Date();
+    const startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    const endDate = new Date(startOfToday);
+    endDate.setDate(endDate.getDate() + 8);
+
+    const query: any = {
+      date: { $gte: startOfToday },
+      $or: [{ from: 'grodno' }, { to: 'grodno' }],
+    };
+
+    const tripData = await this.tripModel.aggregate([
+      {
+        $match: query,
+      },
+      {
+        $sort: { date: 1, departureTime: 1 },
+      },
+      {
+        $lookup: {
+          from: 'orders',
+          localField: '_id',
+          foreignField: 'tripId',
+          as: 'orders',
+        },
+      },
+      {
+        $addFields: {
+          ordersCount: {
+            $sum: '$orders.seatCount',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          date: 1,
+          from: 1,
+          to: 1,
+          sum: 1,
+          arrivalTime: 1,
+          departureTime: 1,
+          seatCount: 1,
+          car: 1,
+          driver: 1,
+          orders: '$ordersCount',
+        },
+      },
+    ]);
+
+    if (!tripData.length) {
+      return [];
+    }
+
+    return tripData;
+  }
+
   async getMIAll(isFull: string): Promise<any[]> {
     let tripData = [];
     if (isFull === 'true') {
@@ -172,6 +286,76 @@ export class TripService {
       }),
     );
     return t;
+  }
+
+  async getNewMIAll(isFull: string): Promise<any[]> {
+    const now = new Date();
+    const startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    const endDate = new Date(startOfToday);
+    endDate.setDate(endDate.getDate() + 8);
+
+    const query: any = {
+      date: { $gte: startOfToday },
+      $or: [
+        { from: 'minsk' },
+        { to: 'minsk' },
+        { from: 'moskva' },
+        { to: 'moskva' },
+      ],
+    };
+
+    if (isFull !== 'true') {
+      query.date.$lte = endDate;
+    }
+
+    const tripData = await this.tripModel.aggregate([
+      {
+        $match: query,
+      },
+      {
+        $sort: { date: 1, departureTime: 1 },
+      },
+      {
+        $lookup: {
+          from: 'orders',
+          localField: '_id',
+          foreignField: 'tripId',
+          as: 'orders',
+        },
+      },
+      {
+        $addFields: {
+          ordersCount: {
+            $sum: '$orders.seatCount',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          date: 1,
+          from: 1,
+          to: 1,
+          sum: 1,
+          arrivalTime: 1,
+          departureTime: 1,
+          seatCount: 1,
+          car: 1,
+          driver: 1,
+          orders: '$ordersCount',
+        },
+      },
+    ]);
+
+    if (!tripData.length) {
+      return [];
+    }
+
+    return tripData;
   }
 
   async getHistory(): Promise<any[]> {
