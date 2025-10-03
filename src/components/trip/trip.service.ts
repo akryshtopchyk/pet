@@ -120,6 +120,43 @@ export class TripService {
     return t;
   }
 
+  async newGetAll(): Promise<any[]> {
+    const tripData = await this.tripModel
+      .find({
+        date: {
+          $gte: new Date(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate(),
+          ),
+        },
+      })
+      .lean()
+      .sort({ date: 'asc', departureTime: 'asc' });
+    if (!tripData || tripData.length == 0) {
+      return [];
+    }
+    const t = await Promise.all(
+      tripData.map(async (trip) => {
+        const orders = await this.orderService.getByTripIdData(trip._id);
+        return {
+          _id: trip._id,
+          date: trip.date,
+          from: trip.from,
+          to: trip.to,
+          sum: trip.sum,
+          arrivalTime: trip.arrivalTime,
+          departureTime: trip.departureTime,
+          seatCount: trip.seatCount,
+          orders: orders.reduce((a: any, b: any) => a + b.seatCount, 0),
+          car: trip.car,
+          driver: trip.driver,
+        };
+      }),
+    );
+    return t;
+  }
+
   async getGIAll(): Promise<any[]> {
     try {
       const now = new Date();
@@ -355,6 +392,51 @@ export class TripService {
       return [];
     }
 
+    return tripData;
+  }
+
+  async newGetHistory(): Promise<any[]> {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(0, 0, 0, 0);
+
+    const tripData = await this.tripModel.aggregate([
+      {
+        $match: {
+          date: { $lt: yesterday },
+        },
+      },
+      {
+        $lookup: {
+          from: 'orders',
+          localField: '_id',
+          foreignField: 'tripId',
+          as: 'orders',
+        },
+      },
+      {
+        $addFields: {
+          ordersCount: {
+            $sum: '$orders.seatCount',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          date: 1,
+          from: 1,
+          to: 1,
+          sum: 1,
+          arrivalTime: 1,
+          departureTime: 1,
+          seatCount: 1,
+          car: 1,
+          driver: 1,
+          orders: '$ordersCount',
+        },
+      },
+    ]);
     return tripData;
   }
 

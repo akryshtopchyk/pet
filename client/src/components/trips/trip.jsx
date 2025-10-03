@@ -80,6 +80,7 @@ const Trip = () => {
               count: el.seatCount,
               description: el.description,
               fromStop: el.fromStop,
+              fromStopTime: el.fromStopTime,
               toStop: el.toStop,
               date: date ? date.toLocaleString('ru-RU') : '',
               isApproved: el.isApproved,
@@ -184,6 +185,7 @@ const Trip = () => {
               count: el.seatCount,
               description: el.description,
               fromStop: el.fromStop,
+              fromStopTime: el.fromStopTime,
               toStop: el.toStop,
               date: date ? date.toLocaleString('ru-RU') : '',
               isApproved: el.isApproved,
@@ -220,6 +222,7 @@ const Trip = () => {
               count: el.seatCount,
               description: el.description,
               fromStop: el.fromStop,
+              fromStopTime: el.fromStopTime,
               toStop: el.toStop,
               date: date ? date.toLocaleString('ru-RU') : '',
               isApproved: el.isApproved,
@@ -494,6 +497,7 @@ const Trip = () => {
                 count: el.seatCount,
                 description: el.description,
                 fromStop: el.fromStop,
+                fromStopTime: el.fromStopTime,
                 toStop: el.toStop,
                 date: date ? date.toLocaleString('ru-RU') : '',
                 isApproved: el.isApproved,
@@ -505,6 +509,11 @@ const Trip = () => {
         }
       }
       setIsNewPassenger(!isNewPassenger);
+    } else {
+      if (!regex.test(phoneNumber)) {
+        alert('Ошибка при вводе данных, номер телефона');
+      }
+      alert('Ошибка при вводе данных');
     }
   };
 
@@ -792,7 +801,12 @@ const Trip = () => {
         </Card>
       </Row>
       <div style={{ margin: '24px 0' }} />
-      <Table columns={columns} dataSource={data} />
+      <Table
+        columns={columns}
+        dataSource={data.sort((a, b) => {
+          return +a.fromStopTime - +b.fromStopTime;
+        })}
+      />
       <Modal
         title={`Удалить ${deletedOrder.firstName} ${deletedOrder.lastName}?`}
         open={isDeleteModalOpen}

@@ -22,7 +22,7 @@ export class OrderService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<IOrder> {
-     const existingOrder = await this.orderModel.findOne({
+    const existingOrder = await this.orderModel.findOne({
       phoneNumber: createOrderDto.phoneNumber,
       tripId: createOrderDto.tripId,
     });

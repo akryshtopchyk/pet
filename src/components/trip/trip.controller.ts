@@ -55,7 +55,7 @@ export class TripController {
   @Get()
   async getTrips(@Res() response) {
     try {
-      const tripData = await this.tripService.getAll();
+      const tripData = await this.tripService.getNewAll();
       return response.status(HttpStatus.OK).json({
         message: 'All trips data found successfully',
         tripData,
@@ -94,7 +94,7 @@ export class TripController {
   @Get('/history')
   async getHistoryTrips(@Res() response) {
     try {
-      const tripData = await this.tripService.getHistory();
+      const tripData = await this.tripService.newGetHistory();
       return response.status(HttpStatus.OK).json({
         message: 'All trips data found successfully',
         tripData,
