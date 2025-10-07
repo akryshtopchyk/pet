@@ -801,12 +801,7 @@ const Trip = () => {
         </Card>
       </Row>
       <div style={{ margin: '24px 0' }} />
-      <Table
-        columns={columns}
-        dataSource={data.sort((a, b) => {
-          return +a.fromStopTime - +b.fromStopTime;
-        })}
-      />
+      <Table columns={columns} dataSource={data} />
       <Modal
         title={`Удалить ${deletedOrder.firstName} ${deletedOrder.lastName}?`}
         open={isDeleteModalOpen}
