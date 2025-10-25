@@ -505,15 +505,19 @@ const Trip = () => {
             }),
           );
         } else {
+          alert('Ошибка при создании');
           setData([]);
         }
+      } else {
+        alert('Ошибка при создании');
       }
       setIsNewPassenger(!isNewPassenger);
     } else {
       if (!regex.test(phoneNumber)) {
         alert('Ошибка при вводе данных, номер телефона');
+      } else {
+        alert('Ошибка при вводе данных');
       }
-      alert('Ошибка при вводе данных');
     }
   };
 
@@ -801,7 +805,12 @@ const Trip = () => {
         </Card>
       </Row>
       <div style={{ margin: '24px 0' }} />
-      <Table columns={columns} dataSource={data} />
+      <Table
+        columns={columns}
+        dataSource={data.sort((a, b) => {
+          return +a.fromStopTime - +b.fromStopTime;
+        })}
+      />
       <Modal
         title={`Удалить ${deletedOrder.firstName} ${deletedOrder.lastName}?`}
         open={isDeleteModalOpen}
