@@ -166,6 +166,42 @@ const Trip = () => {
     setDeletedOrder(data.find((el) => el.key === key));
   };
 
+  const handleEdit = async (key, description) => {
+    const newDescription = prompt('Введите новую пометку', description);
+    const res = await axios.put(`${import.meta.env.VITE_ROUTE}order/${key}`, {
+      description: newDescription,
+    });
+    if (res.status === 200) {
+      const data = await axios.get(`${import.meta.env.VITE_ROUTE}order/${id}`);
+      if (data.status === 200) {
+        const orderData = data.data.orderData;
+        setData(
+          orderData.map((el) => {
+            const date = el.date ? new Date(el.date) : '';
+            return {
+              key: el._id,
+              firstName: el.firstName,
+              lastName: el.lastName,
+              phoneNumber: el.phoneNumber,
+              count: el.seatCount,
+              description: el.description,
+              fromStop: el.fromStop,
+              fromStopTime: el.fromStopTime,
+              toStop: el.toStop,
+              date: date ? date.toLocaleString('ru-RU') : '',
+              isApproved: el.isApproved,
+            };
+          }),
+        );
+      } else {
+        alert('Ошибка');
+        setData([]);
+      }
+    } else {
+      alert('Ошибка');
+    }
+  };
+
   const handleOk = async () => {
     const res = await axios.delete(
       `${import.meta.env.VITE_ROUTE}order/${deletedOrder.key}`,
@@ -273,7 +309,18 @@ const Trip = () => {
     },
     {
       title: 'Пометка',
-      dataIndex: 'description',
+
+      render: (_, record) => (
+        <>
+          <p>{record.description}</p>
+          <Button
+            type="primary"
+            onClick={() => handleEdit(record.key, record.description)}
+          >
+            Изменить
+          </Button>
+        </>
+      ),
       key: 'description',
     },
     {
