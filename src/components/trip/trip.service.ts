@@ -631,4 +631,17 @@ export class TripService {
     );
     return t;
   }
+
+  async getOrdersBySearchData(data: string): Promise<any[]> {
+    if (!data?.trim()) {
+      return [];
+    }
+    const result = await this.orderService.getOrdersBySearchData(data);
+
+    return result.map((item) => ({
+      ...item,
+      key: item.key.toString(),
+      tripId: item.tripId.toString(),
+    }));
+  }
 }

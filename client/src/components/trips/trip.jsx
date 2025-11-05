@@ -202,6 +202,48 @@ const Trip = () => {
     }
   };
 
+  const handleEditCount = async (key, count) => {
+    const newCount = prompt('Введите новое количество мест', count);
+    if (+newCount > 0) {
+      const res = await axios.put(`${import.meta.env.VITE_ROUTE}order/${key}`, {
+        seatCount: +newCount,
+      });
+      if (res.status === 200) {
+        const data = await axios.get(
+          `${import.meta.env.VITE_ROUTE}order/${id}`,
+        );
+        if (data.status === 200) {
+          const orderData = data.data.orderData;
+          setData(
+            orderData.map((el) => {
+              const date = el.date ? new Date(el.date) : '';
+              return {
+                key: el._id,
+                firstName: el.firstName,
+                lastName: el.lastName,
+                phoneNumber: el.phoneNumber,
+                count: el.seatCount,
+                description: el.description,
+                fromStop: el.fromStop,
+                fromStopTime: el.fromStopTime,
+                toStop: el.toStop,
+                date: date ? date.toLocaleString('ru-RU') : '',
+                isApproved: el.isApproved,
+              };
+            }),
+          );
+        } else {
+          alert('Ошибка');
+          setData([]);
+        }
+      } else {
+        alert('Ошибка');
+      }
+    } else {
+      alert('Ошибка ввода');
+    }
+  };
+
   const handleOk = async () => {
     const res = await axios.delete(
       `${import.meta.env.VITE_ROUTE}order/${deletedOrder.key}`,
@@ -294,7 +336,17 @@ const Trip = () => {
     },
     {
       title: 'Количество мест',
-      dataIndex: 'count',
+      render: (_, record) => (
+        <>
+          <p>{record.count}</p>
+          <Button
+            type="primary"
+            onClick={() => handleEditCount(record.key, record.count)}
+          >
+            Изменить
+          </Button>
+        </>
+      ),
       key: 'count',
     },
     {
@@ -309,7 +361,6 @@ const Trip = () => {
     },
     {
       title: 'Пометка',
-
       render: (_, record) => (
         <>
           <p>{record.description}</p>

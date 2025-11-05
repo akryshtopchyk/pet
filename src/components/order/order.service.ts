@@ -315,4 +315,54 @@ export class OrderService {
       .select({ tripId: 1, seatCount: 1 })
       .lean();
   }
+
+  async getOrdersBySearchData(data: string): Promise<any[]> {
+    const regex = new RegExp(data.trim(), 'i');
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    return await this.orderModel
+      .aggregate([
+        {
+          $match: {
+            $or: [
+              { phoneNumber: { $regex: regex } },
+              { lastName: { $regex: regex } },
+            ],
+          },
+        },
+        {
+          $lookup: {
+            from: 'trips',
+            localField: 'tripId',
+            foreignField: '_id',
+            as: 'tripInfo',
+          },
+        },
+        {
+          $unwind: {
+            path: '$tripInfo',
+            preserveNullAndEmptyArrays: false,
+          },
+        },
+        {
+          $match: {
+            'tripInfo.date': { $gte: startOfToday },
+          },
+        },
+        {
+          $project: {
+            key: '$_id',
+            firstName: 1,
+            lastName: 1,
+            phoneNumber: 1,
+            tripId: '$tripInfo._id',
+            date: '$tripInfo.date',
+            departureTime: '$tripInfo.departureTime',
+            from: '$tripInfo.from',
+            to: '$tripInfo.to',
+          },
+        },
+      ])
+      .exec();
+  }
 }

@@ -181,4 +181,17 @@ export class TripController {
       return response.status(err.status).json(err.response);
     }
   }
+
+  @Get('/search/:data')
+  async getOrdersBySearchData(@Res() response, @Param('data') data: string) {
+    try {
+      const orderData = await this.tripService.getOrdersBySearchData(data);
+      return response.status(HttpStatus.OK).json({
+        message: 'All orders data found successfully',
+        orderData,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
 }

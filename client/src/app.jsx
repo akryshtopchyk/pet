@@ -16,6 +16,8 @@ import TripsGI from './components/tripsGI/tripsGI';
 import TripsGIIndex from './components/tripsGI/tripsGIIndex';
 import TripsMI from './components/tripsMiAll/trips';
 import TripsIndexMI from './components/tripsMiAll/tripsIndex';
+import Search from './components/search/search';
+import SearchIndex from './components/search/searchIndex';
 
 export const UserContext = createContext();
 
@@ -37,6 +39,11 @@ const App = () => {
               element: <Trip />,
             },
           ],
+        },
+        {
+          path: '/search',
+          element: <Search />,
+          children: [{ index: true, element: <SearchIndex /> }],
         },
         {
           path: '/tripsMI',
