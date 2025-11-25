@@ -37,6 +37,7 @@ const Trip = () => {
   const [newPlaceCount, setNewPlaceCount] = useState(0);
   const [newSum, setNewSum] = useState(0);
   const [newCar, setNewCar] = useState('');
+  const [newTime, setNewTime] = useState('');
   const [newDriver, setNewDriver] = useState('');
 
   useEffect(() => {
@@ -108,6 +109,7 @@ const Trip = () => {
           driver: tripData.driver,
         });
         setNewCar(tripData.car);
+        setNewTime(tripData.departureTime);
         setNewPlaceCount(tripData.seatCount);
         setNewSum(tripData.sum);
         setNewDriver(tripData.driver);
@@ -135,6 +137,9 @@ const Trip = () => {
   };
   const changeNewCar = (value) => {
     setNewCar(value.target.value);
+  };
+  const changeNewTime = (value) => {
+    setNewTime(value.target.value);
   };
   const changeNewDriver = (value) => {
     setNewDriver(value.target.value);
@@ -482,6 +487,7 @@ const Trip = () => {
       seatCount: newPlaceCount,
       sum: newSum,
       car: newCar,
+      departureTime: newTime,
       driver: newDriver,
     });
     const trip = await axios.get(`${import.meta.env.VITE_ROUTE}trip/${id}`);
@@ -808,6 +814,17 @@ const Trip = () => {
               <Input
                 onChange={changeNewCar}
                 value={newCar}
+                placeholder="Новая машина"
+                style={{ width: 424 }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <h4 className="new_trip_subtitles">Новое время</h4>
+              <Input
+                onChange={changeNewTime}
+                value={newTime}
                 placeholder="Новая машина"
                 style={{ width: 424 }}
               />
