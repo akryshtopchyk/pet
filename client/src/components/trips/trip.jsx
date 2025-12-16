@@ -571,51 +571,63 @@ const Trip = () => {
       const fromStopV = fromStops.find((stop) => stop.id === fromStop);
       const toStops = getToStops(trip.from, trip.to);
       const toStopV = toStops.find((stop) => stop.id === toStop);
-      const res = await axios.post(`${import.meta.env.VITE_ROUTE}order`, {
-        firstName,
-        lastName,
-        phoneNumber,
-        description: description || '.',
-        tripId: id,
-        fromStop: fromStopV.name,
-        fromStopTime: fromStopV.time.toString(),
-        toStop: toStopV.name,
-        toStopTime: toStopV.time.toString(),
-        seatCount: +count,
-        isApproved: false,
-      });
-      if (res.status === 201) {
-        const data = await axios.get(
-          `${import.meta.env.VITE_ROUTE}order/${id}`,
-        );
-        if (data.status === 200) {
-          const orderData = data.data.orderData;
-          setData(
-            orderData.map((el) => {
-              const date = el.date ? new Date(el.date) : '';
-              return {
-                key: el._id,
-                firstName: el.firstName,
-                lastName: el.lastName,
-                phoneNumber: el.phoneNumber,
-                count: el.seatCount,
-                description: el.description,
-                fromStop: el.fromStop,
-                fromStopTime: el.fromStopTime,
-                toStop: el.toStop,
-                date: date ? date.toLocaleString('ru-RU') : '',
-                isApproved: el.isApproved,
-              };
-            }),
+      try {
+        const res = await axios.post(`${import.meta.env.VITE_ROUTE}order`, {
+          firstName,
+          lastName,
+          phoneNumber,
+          description: description || '.',
+          tripId: id,
+          fromStop: fromStopV.name,
+          fromStopTime: fromStopV.time.toString(),
+          toStop: toStopV.name,
+          toStopTime: toStopV.time.toString(),
+          seatCount: +count,
+          isApproved: false,
+        });
+        if (res.status === 201) {
+          const data = await axios.get(
+            `${import.meta.env.VITE_ROUTE}order/${id}`,
           );
+          if (data.status === 200) {
+            const orderData = data.data.orderData;
+            setData(
+              orderData.map((el) => {
+                const date = el.date ? new Date(el.date) : '';
+                return {
+                  key: el._id,
+                  firstName: el.firstName,
+                  lastName: el.lastName,
+                  phoneNumber: el.phoneNumber,
+                  count: el.seatCount,
+                  description: el.description,
+                  fromStop: el.fromStop,
+                  fromStopTime: el.fromStopTime,
+                  toStop: el.toStop,
+                  date: date ? date.toLocaleString('ru-RU') : '',
+                  isApproved: el.isApproved,
+                };
+              }),
+            );
+          } else {
+            alert('Ошибка при создании');
+            setData([]);
+          }
         } else {
           alert('Ошибка при создании');
-          setData([]);
         }
-      } else {
-        alert('Ошибка при создании');
+        setIsNewPassenger(!isNewPassenger);
+      } catch (e) {
+        console.log('error', e);
+        if (
+          e.response.data.err.message ===
+          'Already exists an order for this trip day'
+        ) {
+          alert('Запись с таким номером телефона уже существует на этот день');
+        } else {
+          alert('Ошибка на сервере');
+        }
       }
-      setIsNewPassenger(!isNewPassenger);
     } else {
       if (!regex.test(phoneNumber)) {
         alert('Ошибка при вводе данных, номер телефона');

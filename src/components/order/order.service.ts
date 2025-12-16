@@ -11,11 +11,13 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { IOrder } from '../../interfaces/order.interface';
 import { IDeletedOrder } from '../../interfaces/deleted-order.interface';
 import { PassengerService } from '../passenger/passenger.service';
+import { ITrip } from '../../interfaces/trip.interface';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel('Order') private orderModel: Model<IOrder>,
+    @InjectModel('Trip') private tripModel: Model<ITrip>,
     private readonly passengerService: PassengerService,
     @InjectModel('DeletedOrder')
     private deletedOrderModel: Model<IDeletedOrder>,
@@ -47,29 +49,54 @@ export class OrderService {
   }
 
   async newCreate(createOrderDto: CreateOrderDto): Promise<IOrder> {
+    const { phoneNumber, tripId } = createOrderDto;
+
     const [existingOrder, passenger] = await Promise.all([
-      this.orderModel
-        .findOne({
-          phoneNumber: createOrderDto.phoneNumber,
-          tripId: createOrderDto.tripId,
-        })
-        .lean(),
-      this.passengerService.getByPhone(createOrderDto.phoneNumber),
+      this.orderModel.findOne({ phoneNumber, tripId }).lean(),
+      this.passengerService.getByPhone(phoneNumber),
     ]);
+
     if (existingOrder) {
       throw new ConflictException(
-        `Order with phone number ${createOrderDto.phoneNumber} already exists for this trip`,
+        `Order with phone number ${phoneNumber} already exists for this trip`,
       );
     }
+
     if (passenger?.isBlock) {
       throw new ForbiddenException('Passenger is blocked');
     }
+
+    const trip = await this.tripModel.findById(tripId);
+    if (!trip) {
+      throw new NotFoundException(`Trip with id ${tripId} not found`);
+    }
+
+    const existingOrderSameDay = await this.orderModel
+      .findOne({
+        phoneNumber,
+        tripId: {
+          $in: await this.tripModel
+            .find({
+              date: trip.date,
+              from: trip.from,
+              to: trip.to,
+            })
+            .distinct('_id'),
+        },
+      })
+      .lean();
+
+    if (existingOrderSameDay) {
+      throw new ForbiddenException('Already exists an order for this trip day');
+    }
+
     const newOrder = new this.orderModel({
       ...createOrderDto,
       date: new Date(),
       isApproved: false,
     });
-    return await newOrder.save();
+
+    return newOrder.save();
   }
 
   async update(

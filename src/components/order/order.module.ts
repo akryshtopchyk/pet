@@ -6,10 +6,12 @@ import { OrderController } from './order.controller';
 import { OrderSchema } from '../../schemas/order.schema';
 import { DeletedOrderSchema } from 'src/schemas/deleted-order.schema';
 import { PassengersModule } from '../passenger/passenger.module';
+import { TripSchema } from '../../schemas/trip.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Order', schema: OrderSchema }]),
+    MongooseModule.forFeature([{ name: 'Trip', schema: TripSchema }]),
     MongooseModule.forFeature([
       { name: 'DeletedOrder', schema: DeletedOrderSchema },
     ]),
