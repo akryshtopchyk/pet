@@ -488,6 +488,7 @@ const Trip = () => {
       sum: newSum,
       car: newCar,
       departureTime: newTime,
+      arrivalTime: getArrivalTime(newTime),
       driver: newDriver,
     });
     const trip = await axios.get(`${import.meta.env.VITE_ROUTE}trip/${id}`);
@@ -510,6 +511,26 @@ const Trip = () => {
       });
     } else {
       setTrip({});
+    }
+  };
+
+  const getArrivalTime = (dTime) => {
+    if (trip.to === 'minsk' || trip.from === 'minsk') {
+      const startH = +dTime.split(':')[0] * 60;
+      const startM = +dTime.split(':')[1];
+      const resultH = Math.trunc((startH + startM + 200) / 60);
+      const resultM = startH + startM + 200 - resultH * 60;
+      return `${resultH < 10 ? '0' + resultH : resultH}:${
+        resultM < 10 ? '0' + resultM : resultM
+      }`;
+    } else {
+      const startH = +dTime.split(':')[0] * 60;
+      const startM = +dTime.split(':')[1];
+      const resultH = Math.trunc((startH + startM + 240) / 60);
+      const resultM = startH + startM + 240 - resultH * 60;
+      return `${resultH < 10 ? '0' + resultH : resultH}:${
+        resultM < 10 ? '0' + resultM : resultM
+      }`;
     }
   };
 
