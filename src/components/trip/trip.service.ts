@@ -407,6 +407,9 @@ export class TripService {
         },
       },
       {
+        $sort: { date: -1, departureTime: 1 },
+      },
+      {
         $lookup: {
           from: 'orders',
           localField: '_id',
