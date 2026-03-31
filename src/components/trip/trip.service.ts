@@ -397,7 +397,7 @@ export class TripService {
 
   async newGetHistory(): Promise<any[]> {
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setDate(yesterday.getDate());
     yesterday.setHours(0, 0, 0, 0);
 
     const tripData = await this.tripModel.aggregate([
