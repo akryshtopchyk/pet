@@ -38,9 +38,7 @@ const TripsIndexMI = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await axios.get(
-        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=true`,
-      );
+      const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip/bi`);
       if (data.status === 200) {
         const tripData = data.data.tripData;
         setAllData(tripData);
@@ -82,6 +80,9 @@ const TripsIndexMI = () => {
       case 'grodno':
         newFrom = 'Гродно';
         break;
+      case 'brest':
+        newFrom = 'Брест';
+        break;
       case 'moskva':
         newFrom = 'Москва';
         break;
@@ -98,6 +99,9 @@ const TripsIndexMI = () => {
         break;
       case 'grodno':
         newTo = 'Гродно';
+        break;
+      case 'brest':
+        newTo = 'Брест';
         break;
       case 'moskva':
         newTo = 'Москва';
@@ -151,9 +155,7 @@ const TripsIndexMI = () => {
         driver,
       });
       if (res.status === 201) {
-        const data = await axios.get(
-          `${import.meta.env.VITE_ROUTE}trip/mi?isFull=true`,
-        );
+        const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip/bi`);
         const tripData = data.data.tripData;
         setAllData(tripData);
       }
@@ -213,9 +215,7 @@ const TripsIndexMI = () => {
       `${import.meta.env.VITE_ROUTE}trip/${deletedTrip.key}`,
     );
     if (res.status === 200) {
-      const data = await axios.get(
-        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=true`,
-      );
+      const data = await axios.get(`${import.meta.env.VITE_ROUTE}trip/bi`);
       if (data.status === 200) {
         const tripData = data.data.tripData;
         setAllData(tripData);
@@ -230,10 +230,8 @@ const TripsIndexMI = () => {
 
   const setAllData = (tripData) => {
     const minsk = [];
-    const grodno = [];
-    const moskva = [];
     tripData.forEach((el) => {
-      if (el.from === 'minsk' || el.to === 'minsk') {
+      if (el.from === 'brest' || el.to === 'brest') {
         minsk.push({
           key: el._id,
           tripTitle: getTripTitle(el.from, el.to),
@@ -250,45 +248,8 @@ const TripsIndexMI = () => {
           driver: el.driver,
         });
       }
-      // if (el.from === 'grodno' || el.to === 'grodno') {
-      //   grodno.push({
-      //     key: el._id,
-      //     tripTitle: getTripTitle(el.from, el.to),
-      //     date: `${new Date(el.date).getDate()}.${
-      //       new Date(el.date).getMonth() + 1
-      //     }.${new Date(el.date).getFullYear()} - ${getDay(
-      //       new Date(el.date).getDay(),
-      //     )}`,
-      //     dateTime: el.departureTime,
-      //     place: el.seatCount,
-      //     freePlace: el.seatCount - el.orders,
-      //     cost: el.sum,
-      //     car: el.car,
-      //     driver: el.driver,
-      //   });
-      // }
-      if (el.from === 'moskva' || el.to === 'moskva') {
-        moskva.push({
-          key: el._id,
-          tripTitle: getTripTitle(el.from, el.to),
-          date: `${new Date(el.date).getDate()}.${
-            new Date(el.date).getMonth() + 1
-          }.${new Date(el.date).getFullYear()} - ${getDay(
-            new Date(el.date).getDay(),
-          )}`,
-          dateTime: el.departureTime,
-          place: el.seatCount,
-          freePlace: el.seatCount - el.orders,
-          cost: el.sum,
-          car: el.car,
-          driver: el.driver,
-        });
-      }
     });
-
-    setMoskvaData(moskva);
     setData(minsk);
-    // setGrodnoData(grodno);
   };
 
   const columns = [
@@ -441,6 +402,7 @@ const TripsIndexMI = () => {
                   { value: 'minsk', label: 'Минск' },
                   { value: 'ivanovo', label: 'Иваново' },
                   { value: 'grodno', label: 'Гродно' },
+                  { value: 'brest', label: 'Брест' },
                   { value: 'moskva', label: 'Москва' },
                   { value: 'pinsk', label: 'Пинск' },
                 ]}
@@ -455,6 +417,7 @@ const TripsIndexMI = () => {
                   { value: 'minsk', label: 'Минск' },
                   { value: 'ivanovo', label: 'Иваново' },
                   { value: 'grodno', label: 'Гродно' },
+                  { value: 'brest', label: 'Брест' },
                   { value: 'moskva', label: 'Москва' },
                   { value: 'pinsk', label: 'Пинск' },
                 ]}
@@ -529,7 +492,7 @@ const TripsIndexMI = () => {
       <div style={{ margin: '24px 0' }} />
       <Row>
         <Col span={24}>
-          <h1>Иваново-Минск-Иваново</h1>
+          <h1>Иваново-Брест-Иваново</h1>
         </Col>
       </Row>
       <Table columns={columns} dataSource={data} />
@@ -541,15 +504,6 @@ const TripsIndexMI = () => {
         </Col>
       </Row>
       <Table columns={columns} dataSource={grodnoData} /> */}
-
-      <div style={{ margin: '24px 0' }} />
-      <Row>
-        <Col span={24}>
-          <h1>Пинск-Москва-Пинск</h1>
-        </Col>
-      </Row>
-      <Table columns={columns} dataSource={moskvaData} />
-
       <Row>
         <Col span={24}>
           <h1>Прошедшые маршруты</h1>

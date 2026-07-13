@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-const TripsMI = () => {
+const TripsBI = () => {
   return (
     <>
       <Outlet />
@@ -8,4 +8,4 @@ const TripsMI = () => {
   );
 };
 
-export default TripsMI;
+export default TripsBI;

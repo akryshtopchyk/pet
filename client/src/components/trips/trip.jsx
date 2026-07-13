@@ -547,6 +547,12 @@ const Trip = () => {
     if (from === 'ivanovo' && to === 'minsk') {
       return stops.fromIvanovoToMinsk;
     }
+    if (from === 'brest' && to === 'ivanovo') {
+      return stops.fromBrestToIvanovo;
+    }
+    if (from === 'ivanovo' && to === 'brest') {
+      return stops.fromIvanovoToBrest;
+    }
 
     if (from === 'moskva' && to === 'pinsk') {
       return stops.fromMoskvaToPinsk;
@@ -568,6 +574,12 @@ const Trip = () => {
     }
     if (from === 'ivanovo' && to === 'minsk') {
       return stops.toMinskFromIvanovo;
+    }
+    if (from === 'brest' && to === 'ivanovo') {
+      return stops.toIvanovoFromBrest;
+    }
+    if (from === 'ivanovo' && to === 'brest') {
+      return stops.toBrestFromIvanovo;
     }
     if (from === 'moskva' && to === 'pinsk') {
       return stops.toPinskFromMoskva;
@@ -676,6 +688,9 @@ const Trip = () => {
       case 'pinsk':
         newFrom = 'Пинск';
         break;
+      case 'brest':
+        newFrom = 'Брест';
+        break;
     }
     switch (to) {
       case 'minsk':
@@ -692,6 +707,9 @@ const Trip = () => {
         break;
       case 'pinsk':
         newTo = 'Пинск';
+        break;
+      case 'brest':
+        newTo = 'Брест';
         break;
     }
     return `${newFrom} - ${newTo}`;
@@ -733,6 +751,18 @@ const Trip = () => {
         label: stop.name,
       }));
     }
+    if (from === 'brest' && to === 'ivanovo') {
+      return stops.fromBrestToIvanovo.map((stop) => ({
+        value: stop.id,
+        label: stop.name,
+      }));
+    }
+    if (from === 'ivanovo' && to === 'brest') {
+      return stops.fromIvanovoToBrest.map((stop) => ({
+        value: stop.id,
+        label: stop.name,
+      }));
+    }
   };
 
   const getToStopsTitles = (from, to) => {
@@ -768,6 +798,18 @@ const Trip = () => {
     }
     if (from === 'pinsk' && to === 'moskva') {
       return stops.toMoskvaFromPinsk.map((stop) => ({
+        value: stop.id,
+        label: stop.name,
+      }));
+    }
+    if (from === 'brest' && to === 'ivanovo') {
+      return stops.toIvanovoFromBrest.map((stop) => ({
+        value: stop.id,
+        label: stop.name,
+      }));
+    }
+    if (from === 'ivanovo' && to === 'brest') {
+      return stops.toBrestFromIvanovo.map((stop) => ({
         value: stop.id,
         label: stop.name,
       }));
@@ -955,6 +997,7 @@ const Trip = () => {
       <div style={{ margin: '24px 0' }} />
       <Table
         columns={columns}
+        pagination={{ pageSize: 50 }}
         dataSource={data.sort((a, b) => {
           return +a.fromStopTime - +b.fromStopTime;
         })}

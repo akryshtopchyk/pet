@@ -14,8 +14,8 @@ import { createContext, useState } from 'react';
 import TripsGI from './components/tripsGI/tripsGI';
 // import TripGI from './components/tripsGI/tripGI';
 import TripsGIIndex from './components/tripsGI/tripsGIIndex';
-import TripsMI from './components/tripsMiAll/trips';
-import TripsIndexMI from './components/tripsMiAll/tripsIndex';
+import TripsBI from './components/tripsBI/trips';
+import TripsIndexBI from './components/tripsBI/tripsIndex';
 import Search from './components/search/search';
 import SearchIndex from './components/search/searchIndex';
 
@@ -46,12 +46,12 @@ const App = () => {
           children: [{ index: true, element: <SearchIndex /> }],
         },
         {
-          path: '/tripsMI',
-          element: <TripsMI />,
+          path: '/tripsBI',
+          element: <TripsBI />,
           children: [
-            { index: true, element: <TripsIndexMI /> },
+            { index: true, element: <TripsIndexBI /> },
             {
-              path: '/tripsMI/:id',
+              path: '/tripsBI/:id',
               element: <Trip />,
             },
           ],

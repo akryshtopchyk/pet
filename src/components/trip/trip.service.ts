@@ -257,6 +257,67 @@ export class TripService {
     return tripData;
   }
 
+  async getNewBIAll(): Promise<any[]> {
+    const now = new Date();
+    const startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    const endDate = new Date(startOfToday);
+    endDate.setDate(endDate.getDate() + 8);
+
+    const query: any = {
+      date: { $gte: startOfToday },
+      $or: [{ from: 'brest' }, { to: 'brest' }],
+    };
+
+    const tripData = await this.tripModel.aggregate([
+      {
+        $match: query,
+      },
+      {
+        $sort: { date: 1, departureTime: 1 },
+      },
+      {
+        $lookup: {
+          from: 'orders',
+          localField: '_id',
+          foreignField: 'tripId',
+          as: 'orders',
+        },
+      },
+      {
+        $addFields: {
+          ordersCount: {
+            $sum: '$orders.seatCount',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          date: 1,
+          from: 1,
+          to: 1,
+          sum: 1,
+          arrivalTime: 1,
+          departureTime: 1,
+          seatCount: 1,
+          car: 1,
+          driver: 1,
+          orders: '$ordersCount',
+        },
+      },
+    ]);
+
+    if (!tripData.length) {
+      return [];
+    }
+
+    return tripData;
+  }
+
   async getMIAll(isFull: string): Promise<any[]> {
     let tripData = [];
     if (isFull === 'true') {

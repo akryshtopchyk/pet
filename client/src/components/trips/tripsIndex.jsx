@@ -39,7 +39,7 @@ const TripsIndex = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await axios.get(
-        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=false`,
+        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=true`,
       );
       if (data.status === 200) {
         const tripData = data.data.tripData;
@@ -88,6 +88,9 @@ const TripsIndex = () => {
       case 'pinsk':
         newFrom = 'Пинск';
         break;
+      case 'brest':
+        newTo = 'Брест';
+        break;
     }
     switch (to) {
       case 'minsk':
@@ -104,6 +107,9 @@ const TripsIndex = () => {
         break;
       case 'pinsk':
         newTo = 'Пинск';
+        break;
+      case 'brest':
+        newTo = 'Брест';
         break;
     }
     return `${newFrom} - ${newTo}`;
@@ -152,7 +158,7 @@ const TripsIndex = () => {
       });
       if (res.status === 201) {
         const data = await axios.get(
-          `${import.meta.env.VITE_ROUTE}trip/mi?isFull=false`,
+          `${import.meta.env.VITE_ROUTE}trip/mi?isFull=true`,
         );
         const tripData = data.data.tripData;
         setAllData(tripData);
@@ -214,7 +220,7 @@ const TripsIndex = () => {
     );
     if (res.status === 200) {
       const data = await axios.get(
-        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=false`,
+        `${import.meta.env.VITE_ROUTE}trip/mi?isFull=true`,
       );
       if (data.status === 200) {
         const tripData = data.data.tripData;
@@ -441,6 +447,7 @@ const TripsIndex = () => {
                   { value: 'minsk', label: 'Минск' },
                   { value: 'ivanovo', label: 'Иваново' },
                   { value: 'grodno', label: 'Гродно' },
+                  { value: 'brest', label: 'Брест' },
                   { value: 'moskva', label: 'Москва' },
                   { value: 'pinsk', label: 'Пинск' },
                 ]}
@@ -455,6 +462,7 @@ const TripsIndex = () => {
                   { value: 'minsk', label: 'Минск' },
                   { value: 'ivanovo', label: 'Иваново' },
                   { value: 'grodno', label: 'Гродно' },
+                  { value: 'brest', label: 'Брест' },
                   { value: 'moskva', label: 'Москва' },
                   { value: 'pinsk', label: 'Пинск' },
                 ]}

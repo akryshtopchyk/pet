@@ -347,6 +347,22 @@ export class OrderService {
         { id: 9, name: 'Минск (метро Могилевская)', time: 290 },
         { id: 10, name: 'Москва (автовокзал саларьево)', time: 780 },
       ],
+      fromIvanovoToBrest: [
+        { id: 1, name: 'Иваново Автовокзал', time: 0 },
+        { id: 2, name: 'Дрогичин Автовокзал', time: 33 },
+      ],
+      fromBrestToIvanovo: [
+        { id: 1, name: 'Автовокзал Брест', time: 0 },
+        { id: 2, name: 'Брест тех университет', time: 15 },
+      ],
+      toIvanovoFromBrest: [
+        { id: 1, name: 'Иваново Автовокзал', time: 0 },
+        { id: 2, name: 'Дрогичин Автовокзал', time: 33 },
+      ],
+      toBrestFromIvanovo: [
+        { id: 1, name: 'Автовокзал Брест', time: 0 },
+        { id: 2, name: 'Брест тех университет', time: 15 },
+      ],
     };
   }
   async getAllDeletedByTripId(tripId): Promise<IOrder[]> {
@@ -415,5 +431,9 @@ export class OrderService {
         },
       ])
       .exec();
+  }
+
+  async deleteOld() {
+    await this.deletedOrderModel.deleteMany();
   }
 }

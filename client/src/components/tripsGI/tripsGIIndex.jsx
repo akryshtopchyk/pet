@@ -84,6 +84,9 @@ const TripsGIIndex = () => {
       case 'pinsk':
         newFrom = 'Пинск';
         break;
+      case 'brest':
+        newTo = 'Брест';
+        break;
     }
     switch (to) {
       case 'minsk':
@@ -100,6 +103,9 @@ const TripsGIIndex = () => {
         break;
       case 'pinsk':
         newTo = 'Пинск';
+        break;
+      case 'brest':
+        newTo = 'Брест';
         break;
     }
     return `${newFrom} - ${newTo}`;
@@ -389,6 +395,7 @@ const TripsGIIndex = () => {
                   { value: 'minsk', label: 'Минск' },
                   { value: 'ivanovo', label: 'Иваново' },
                   { value: 'grodno', label: 'Гродно' },
+                  { value: 'brest', label: 'Брест' },
                   { value: 'moskva', label: 'Москва' },
                   { value: 'pinsk', label: 'Пинск' },
                 ]}
@@ -403,6 +410,7 @@ const TripsGIIndex = () => {
                   { value: 'minsk', label: 'Минск' },
                   { value: 'ivanovo', label: 'Иваново' },
                   { value: 'grodno', label: 'Гродно' },
+                  { value: 'brest', label: 'Брест' },
                   { value: 'moskva', label: 'Москва' },
                   { value: 'pinsk', label: 'Пинск' },
                 ]}

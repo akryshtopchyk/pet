@@ -526,6 +526,9 @@ const Trip = () => {
       case 'pinsk':
         newFrom = 'Пинск';
         break;
+      case 'brest':
+        newFrom = 'Брест';
+        break;
     }
     switch (to) {
       case 'minsk':
@@ -542,6 +545,9 @@ const Trip = () => {
         break;
       case 'pinsk':
         newTo = 'Пинск';
+        break;
+      case 'brest':
+        newFrom = 'Брест';
         break;
     }
     return `${newFrom} - ${newTo}`;
@@ -583,6 +589,18 @@ const Trip = () => {
         label: stop.name,
       }));
     }
+    if (from === 'brest' && to === 'ivanovo') {
+      return stops.fromBrestToIvanovo.map((stop) => ({
+        value: stop.id,
+        label: stop.name,
+      }));
+    }
+    if (from === 'ivanovo' && to === 'brest') {
+      return stops.fromIvanovoToBrest.map((stop) => ({
+        value: stop.id,
+        label: stop.name,
+      }));
+    }
   };
 
   const getToStopsTitles = (from, to) => {
@@ -618,6 +636,18 @@ const Trip = () => {
     }
     if (from === 'pinsk' && to === 'moskva') {
       return stops.toMoskvaFromPinsk.map((stop) => ({
+        value: stop.id,
+        label: stop.name,
+      }));
+    }
+    if (from === 'brest' && to === 'ivanovo') {
+      return stops.toIvanovoFromBrest.map((stop) => ({
+        value: stop.id,
+        label: stop.name,
+      }));
+    }
+    if (from === 'ivanovo' && to === 'brest') {
+      return stops.toBrestFromIvanovo.map((stop) => ({
         value: stop.id,
         label: stop.name,
       }));

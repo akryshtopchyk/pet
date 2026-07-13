@@ -23,8 +23,8 @@ const Root = () => {
       color: 'green',
     },
     { key: '/trips', label: 'Минск-Иваново', icon: <CarOutlined /> },
-    { key: '/tripsMI', label: 'Все Минск-Иваново', icon: <CarOutlined /> },
     { key: '/tripsGI', label: 'Гродно-Иваново', icon: <CarOutlined /> },
+    { key: '/tripsBI', label: 'Брест-Иваново', icon: <CarOutlined /> },
     { key: '/news', label: 'Новости', icon: <NotificationOutlined /> },
     { key: '/users', label: 'Пользователи', icon: <UserOutlined /> },
   ];
