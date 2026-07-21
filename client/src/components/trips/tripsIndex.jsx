@@ -28,8 +28,6 @@ const TripsIndex = () => {
   const [seatCount, setSeatCount] = useState(15);
   const [sum, setSum] = useState(25);
   const [data, setData] = useState([]);
-  // const [grodnoData, setGrodnoData] = useState([]);
-  const [moskvaData, setMoskvaData] = useState([]);
   const [history, setHistory] = useState([]);
 
   const onChangeDate = (date, dateString) => {
@@ -236,8 +234,6 @@ const TripsIndex = () => {
 
   const setAllData = (tripData) => {
     const minsk = [];
-    const grodno = [];
-    const moskva = [];
     tripData.forEach((el) => {
       if (el.from === 'minsk' || el.to === 'minsk') {
         minsk.push({
@@ -256,45 +252,8 @@ const TripsIndex = () => {
           driver: el.driver,
         });
       }
-      // if (el.from === 'grodno' || el.to === 'grodno') {
-      //   grodno.push({
-      //     key: el._id,
-      //     tripTitle: getTripTitle(el.from, el.to),
-      //     date: `${new Date(el.date).getDate()}.${
-      //       new Date(el.date).getMonth() + 1
-      //     }.${new Date(el.date).getFullYear()} - ${getDay(
-      //       new Date(el.date).getDay(),
-      //     )}`,
-      //     dateTime: el.departureTime,
-      //     place: el.seatCount,
-      //     freePlace: el.seatCount - el.orders,
-      //     cost: el.sum,
-      //     car: el.car,
-      //     driver: el.driver,
-      //   });
-      // }
-      if (el.from === 'moskva' || el.to === 'moskva') {
-        moskva.push({
-          key: el._id,
-          tripTitle: getTripTitle(el.from, el.to),
-          date: `${new Date(el.date).getDate()}.${
-            new Date(el.date).getMonth() + 1
-          }.${new Date(el.date).getFullYear()} - ${getDay(
-            new Date(el.date).getDay(),
-          )}`,
-          dateTime: el.departureTime,
-          place: el.seatCount,
-          freePlace: el.seatCount - el.orders,
-          cost: el.sum,
-          car: el.car,
-          driver: el.driver,
-        });
-      }
     });
-
-    setMoskvaData(moskva);
     setData(minsk);
-    // setGrodnoData(grodno);
   };
 
   const columns = [
@@ -541,22 +500,6 @@ const TripsIndex = () => {
         </Col>
       </Row>
       <Table columns={columns} dataSource={data} />
-
-      {/* <div style={{ margin: '24px 0' }} />
-      <Row>
-        <Col span={24}>
-          <h1>Иваново-Гродно-Иваново</h1>
-        </Col>
-      </Row>
-      <Table columns={columns} dataSource={grodnoData} /> */}
-
-      <div style={{ margin: '24px 0' }} />
-      <Row>
-        <Col span={24}>
-          <h1>Пинск-Москва-Пинск</h1>
-        </Col>
-      </Row>
-      <Table columns={columns} dataSource={moskvaData} />
 
       <Row>
         <Col span={24}>
