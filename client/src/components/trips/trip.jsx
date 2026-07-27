@@ -26,8 +26,8 @@ const Trip = () => {
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [count, setCount] = useState('');
-  const [fromStop, setFromStop] = useState();
-  const [toStop, setToStop] = useState();
+  const [fromStop, setFromStop] = useState(1);
+  const [toStop, setToStop] = useState(1);
   const [description, setDescription] = useState('');
   const [data, setData] = useState([]);
   const [trip, setTrip] = useState({});
@@ -160,6 +160,7 @@ const Trip = () => {
     setFromStop(value);
   };
   const changeToStop = (value) => {
+    console.log(value);
     setToStop(value);
   };
   const changeDescription = (value) => {
@@ -523,6 +524,14 @@ const Trip = () => {
       return `${resultH < 10 ? '0' + resultH : resultH}:${
         resultM < 10 ? '0' + resultM : resultM
       }`;
+    } else if (trip.to === 'brest' || trip.from === 'brest') {
+      const startH = +dTime.split(':')[0] * 60;
+      const startM = +dTime.split(':')[1];
+      const resultH = Math.trunc((startH + startM + 120) / 60);
+      const resultM = startH + startM + 120 - resultH * 60;
+      return `${resultH < 10 ? '0' + resultH : resultH}:${
+        resultM < 10 ? '0' + resultM : resultM
+      }`;
     } else {
       const startH = +dTime.split(':')[0] * 60;
       const startM = +dTime.split(':')[1];
@@ -591,8 +600,8 @@ const Trip = () => {
 
   const createPassenger = async () => {
     const regex = /^[0-9+]+$/;
+    console.log(fromStop);
     if (
-      firstName &&
       lastName &&
       phoneNumber &&
       regex.test(phoneNumber) &&
@@ -606,10 +615,10 @@ const Trip = () => {
       const toStopV = toStops.find((stop) => stop.id === toStop);
       try {
         const res = await axios.post(`${import.meta.env.VITE_ROUTE}order`, {
-          firstName,
+          firstName: firstName || '-',
           lastName,
           phoneNumber,
-          description: description || '.',
+          description: description || '-',
           tripId: id,
           fromStop: fromStopV.name,
           fromStopTime: fromStopV.time.toString(),
@@ -714,6 +723,7 @@ const Trip = () => {
     }
     return `${newFrom} - ${newTo}`;
   };
+
   const getFromStopsTitles = (from, to) => {
     if (from === 'minsk' && to === 'ivanovo') {
       return stops.fromMinskToIvanovo.map((stop) => ({
@@ -900,7 +910,7 @@ const Trip = () => {
               <Input
                 onChange={changeNewTime}
                 value={newTime}
-                placeholder="Новая машина"
+                placeholder="Новое время"
                 style={{ width: 424 }}
               />
             </Col>
@@ -974,12 +984,14 @@ const Trip = () => {
             style={{ width: '100%' }}
             onChange={changeFromStop}
             options={getFromStopsTitles(trip.from, trip.to)}
+            value={fromStop}
           />
           <h4 className="new_trip_subtitles">Высадка</h4>
           <Select
             style={{ width: '100%' }}
             onChange={changeToStop}
             options={getToStopsTitles(trip.from, trip.to)}
+            value={toStop}
           />
           <div style={{ margin: '24px 0' }} />
           <TextArea

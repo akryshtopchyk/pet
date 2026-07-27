@@ -174,6 +174,14 @@ const TripsIndexMI = () => {
       return `${resultH < 10 ? '0' + resultH : resultH}:${
         resultM < 10 ? '0' + resultM : resultM
       }`;
+    } else if (to === 'brest' || from === 'brest') {
+      const startH = +dTime.split(':')[0] * 60;
+      const startM = +dTime.split(':')[1];
+      const resultH = Math.trunc((startH + startM + 120) / 60);
+      const resultM = startH + startM + 120 - resultH * 60;
+      return `${resultH < 10 ? '0' + resultH : resultH}:${
+        resultM < 10 ? '0' + resultM : resultM
+      }`;
     } else {
       const startH = +dTime.split(':')[0] * 60;
       const startM = +dTime.split(':')[1];
