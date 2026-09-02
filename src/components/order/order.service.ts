@@ -214,8 +214,6 @@ export class OrderService {
       mi: [
         { id: 1, name: 'Автостанция "Юго-Западная"', time: 0 },
         { id: 2, name: 'Станция метро "Петровщина"', time: 5 },
-        { id: 3, name: 'Барановичи', time: 100 },
-        { id: 4, name: 'Ивацевичи', time: 150 },
       ],
       im: [
         { id: 1, name: 'Автовокзал Иваново', time: 0 },
@@ -225,19 +223,15 @@ export class OrderService {
         { id: 6, name: 'УПК', time: 5 },
         { id: 7, name: 'Мотоль', time: 10 },
         { id: 8, name: 'Тышковичи', time: 16 },
-        { id: 9, name: 'Ивацевичи', time: 50 },
-        { id: 10, name: 'Барановичи', time: 100 },
       ],
       fromMinskToIvanovo: [
         { id: 1, name: 'Автостанция "Юго-Западная"', time: 0 },
         { id: 2, name: 'Станция метро "Петровщина"', time: 5 },
-        { id: 3, name: 'Барановичи', time: 100 },
       ],
       toMinskFromIvanovo: [
         { id: 1, name: 'Автостанция "Юго-Западная"', time: 0 },
         { id: 2, name: 'Станция метро "Петровщина"', time: 5 },
         { id: 3, name: 'Станция метро "Малиновка"', time: 5 },
-        { id: 4, name: 'Барановичи', time: 100 },
       ],
       fromIvanovoToMinsk: [
         { id: 1, name: 'Автовокзал Иваново', time: 0 },
@@ -252,11 +246,6 @@ export class OrderService {
         { id: 10, name: 'Тышковичи (2 остановка «За памятником»)', time: 21 },
         { id: 11, name: 'Тышковичи (3 остановка «В конце деревни»)', time: 22 },
         { id: 12, name: 'Оброво', time: 35 },
-        {
-          id: 13,
-          name: 'Барановичи ( остановка возле ТЦ « Корона») ',
-          time: 100,
-        },
       ],
       toIvanovoFromMinsk: [
         { id: 1, name: 'Автовокзал Иваново', time: 0 },
@@ -271,11 +260,6 @@ export class OrderService {
         { id: 10, name: 'Тышковичи (2 остановка «За памятником»)', time: 21 },
         { id: 11, name: 'Тышковичи (3 остановка «В конце деревни»)', time: 22 },
         { id: 12, name: 'Оброво', time: 35 },
-        {
-          id: 13,
-          name: 'Барановичи ( остановка возле ТЦ « Корона»)',
-          time: 100,
-        },
       ],
       fromIvanovoToGrodno: [
         { id: 1, name: 'Иваново Автовокзал', time: 0 },
